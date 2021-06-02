@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { StyleSheet } from "react-native";
 import { FAB } from "react-native-paper";
@@ -13,11 +12,15 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen = ({ navigation }) => {
+  const onPressHandler = () => {
+    navigation.navigate("Hello");
+  }
+
   return (
     <FAB
       style={styles.fab}
       icon="plus"
-      onPress={() => navigation.navigate("Hello")}
+      onPress={onPressHandler}
     />
   );
 };
