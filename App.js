@@ -22,7 +22,7 @@ const App = () => {
         }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Hello" component={AddEntryScreen} />
+        <Stack.Screen name="AddEntry" component={AddEntryScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
