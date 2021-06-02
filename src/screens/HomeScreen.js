@@ -14,15 +14,9 @@ const styles = StyleSheet.create({
 const HomeScreen = ({ navigation }) => {
   const onPressHandler = () => {
     navigation.navigate("Hello");
-  }
+  };
 
-  return (
-    <FAB
-      style={styles.fab}
-      icon="plus"
-      onPress={onPressHandler}
-    />
-  );
+  return <FAB style={styles.fab} icon="plus" onPress={onPressHandler} />;
 };
 
 export default HomeScreen;
