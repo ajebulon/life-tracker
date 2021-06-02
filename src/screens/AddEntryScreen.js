@@ -5,6 +5,7 @@ import { TextInput, Button } from "react-native-paper";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
     backgroundColor: "#ffffff",
   },
 
@@ -34,24 +35,22 @@ const AddEntryScreen = () => {
           style={styles.cardElem}
         />
         
-        <View style={{flex: 1, flexDirection: "row"}}>
-          <View style={{flex: 2}}>
-            <TextInput
-              label="Target"
-              value={target}
-              onChangeText={(target) => setTarget(target)}
-              style={styles.cardElem}
-            />
-          </View>
-          <View style={{flex: 1}}>
-            <TextInput
-              label="Target2"
-              value={target}
-              onChangeText={(target) => setTarget(target)}
-              style={styles.cardElem}
-            />
-          </View>
+        <View style={{flexDirection: "row", justifyContent: "space-evenly"}}>
+          <TextInput
+            label="Target"
+            value={target}
+            onChangeText={(target) => setTarget(target)}
+            style={{...styles.cardElem, marginEnd: "2.5%", width: "50%"}}
+          />
+          <TextInput
+            label="Target2"
+            value={target}
+            onChangeText={(target) => setTarget(target)}
+            style={{...styles.cardElem, marginStart: "2.5%", width: "50%"}}
+          />
         </View>
+        
+        <View style={{flex: 1}}></View>
 
         <Button
           mode="contained"
