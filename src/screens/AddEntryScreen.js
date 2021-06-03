@@ -81,7 +81,12 @@ const AddEntryScreen = ({ navigation }) => {
             label="Target"
             value={target.toString()}
             onChangeText={(target) => {
-              setTarget(parseInt(target));
+              console.log("State: " + target.length);
+              if (target.length == 0) {
+                setTarget(0);
+              } else {
+                setTarget(parseInt(target));
+              }
             }}
             style={{ ...styles.cardElem, marginEnd: "2.5%", width: "75%" }}
             keyboardType="numeric"
