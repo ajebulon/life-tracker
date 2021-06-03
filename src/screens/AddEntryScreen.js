@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, Keyboard, StyleSheet, View } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
+import * as SQLite from "expo-sqlite";
+
+import StylishButton from "../components/StylishButton";
 
 const styles = StyleSheet.create({
   container: {
@@ -22,10 +25,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const AddEntryScreen = () => {
+const AddEntryScreen = ({navigation}) => {
   const [title, setTitle] = useState("");
   const [target, setTarget] = useState(0);
-  const [unit, setUnit] = useState();
+  const [unit, setUnit] = useState("day");
+
+  const saveData = () => {
+    if (title.length > 0) {
+      Alert.alert("Success", "" + title + " target is " + target + " per " + unit);
+      navigation.navigate("Home");
+    } else {
+      Alert.alert("Error", "Please insert title name");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -35,14 +47,19 @@ const AddEntryScreen = () => {
           value={title}
           onChangeText={(title) => setTitle(title)}
           style={styles.cardElem}
+          onSubmitEditing={Keyboard.dismiss}
         />
 
         <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
           <TextInput
             label="Target"
-            value={target}
-            onChangeText={(target) => setTarget(target)}
+            value={target.toString()}
+            onChangeText={(target) => {
+              setTarget(parseInt(target));
+            }}
             style={{ ...styles.cardElem, marginEnd: "2.5%", width: "75%" }}
+            keyboardType="numeric"
+            onSubmitEditing={Keyboard.dismiss}
           />
           <Picker
             selectedValue={unit}
@@ -50,30 +67,24 @@ const AddEntryScreen = () => {
             style={{ ...styles.cardElem, marginEnd: "2.5%", width: "25%" }}
             mode="dropdown"
           >
-            <Picker.Item 
+            <Picker.Item
               label="Day"
               value="day"
-              style={{backgroundColor: "cyan", color: "red"}}
             />
-            <Picker.Item 
+            <Picker.Item
               label="Week"
               value="week"
-              style={{backgroundColor: "cyan", color: "red"}}
             />
           </Picker>
         </View>
 
         <View style={{ flex: 1 }}></View>
 
-        <Button
-          mode="contained"
+        <StylishButton
+          label="Save"
           icon="content-save"
-          onPress={() => {
-            console.log(title + " target is " + target + " per " + unit);
-          }}
-        >
-          Save
-        </Button>
+          onPressHandler={saveData}
+        />
       </View>
     </View>
   );

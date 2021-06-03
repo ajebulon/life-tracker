@@ -21,8 +21,16 @@ const App = () => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       >
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="AddEntry" component={AddEntryScreen} />
+        <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{title: "Home"}}
+          />
+        <Stack.Screen 
+          name="AddEntry" 
+          component={AddEntryScreen} 
+          options={{title: "New Entry"}}
+          />
       </Stack.Navigator>
     </NavigationContainer>
   );
