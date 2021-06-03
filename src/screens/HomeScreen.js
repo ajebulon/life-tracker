@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { FAB } from "react-native-paper";
+import * as SQLite from "expo-sqlite";
 
 const styles = StyleSheet.create({
   fab: {
@@ -17,7 +18,22 @@ const styles = StyleSheet.create({
   }
 });
 
-const HomeScreen = ({ navigation }) => {  
+const db = SQLite.openDatabase("trackedItems.db");
+
+const HomeScreen = ({ navigation }) => {
+
+  useEffect(() => {
+    createDbTable();
+  });
+
+  const createDbTable = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'create table if not exists items (id integer primary key not null, title text, target int, unit text);'
+      );
+    }, [], () => console.log("DB is created"));
+  }
+
   const onPressHandler = () => {
     navigation.navigate("AddEntry");
   };

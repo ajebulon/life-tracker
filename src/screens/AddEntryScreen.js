@@ -25,14 +25,40 @@ const styles = StyleSheet.create({
   },
 });
 
-const AddEntryScreen = ({navigation}) => {
+const db = SQLite.openDatabase("trackedItems.db");
+
+const AddEntryScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [target, setTarget] = useState(0);
   const [unit, setUnit] = useState("day");
 
+  const createDbTable = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "create table if not exists items (id integer primary key not null, title text, target int, unit text);"
+      );
+    });
+  };
+
+  const storeEntryToDb = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "insert into items (title, target, unit) values (?, ?, ?)",
+        [title, target, unit]
+      );
+      tx.executeSql("select * from items", [], (_, { rows }) => {
+        console.log(JSON.stringify(rows));
+      });
+    });
+  };
+
   const saveData = () => {
     if (title.length > 0) {
-      Alert.alert("Success", "" + title + " target is " + target + " per " + unit);
+      Alert.alert(
+        "Success",
+        "" + title + " target is " + target + " per " + unit
+      );
+      storeEntryToDb();
       navigation.navigate("Home");
     } else {
       Alert.alert("Error", "Please insert title name");
@@ -67,14 +93,8 @@ const AddEntryScreen = ({navigation}) => {
             style={{ ...styles.cardElem, marginEnd: "2.5%", width: "25%" }}
             mode="dropdown"
           >
-            <Picker.Item
-              label="Day"
-              value="day"
-            />
-            <Picker.Item
-              label="Week"
-              value="week"
-            />
+            <Picker.Item label="Day" value="day" />
+            <Picker.Item label="Week" value="week" />
           </Picker>
         </View>
 
