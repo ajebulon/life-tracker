@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, Keyboard, StyleSheet, View } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
@@ -32,6 +32,10 @@ const AddEntryScreen = ({ navigation }) => {
   const [target, setTarget] = useState(0);
   const [unit, setUnit] = useState("day");
 
+  useEffect(() => {
+    createDbTable();
+  });
+
   const createDbTable = () => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -59,7 +63,7 @@ const AddEntryScreen = ({ navigation }) => {
         "" + title + " target is " + target + " per " + unit
       );
       storeEntryToDb();
-      navigation.navigate("Home");
+      navigation.navigate("Home", {updateFlag: true});
     } else {
       Alert.alert("Error", "Please insert title name");
     }
