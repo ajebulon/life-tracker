@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, StyleSheet, View, Text, ScrollView } from "react-native";
+import { StyleSheet, View, Text, ScrollView, RefreshControl } from "react-native";
 import { FAB } from "react-native-paper";
 import * as SQLite from "expo-sqlite";
 
@@ -58,12 +58,19 @@ const Item = ({ props }) => {
 
 const HomeScreen = ({ navigation, route }) => {
   const [items, setItems] = useState([]);
-  const [update, setUpdate] = useState(true);
+  const [refresh, setRefresh] = useState(false);
+
 
   useEffect(() => {
     createDbTable();
     getEntriesFromDb();
   }, [route.params]);
+
+  const onRefresh = () => {
+    setRefresh(true);
+    getEntriesFromDb();
+    setRefresh(false);
+  }
 
   const createDbTable = () => {
     db.transaction(
@@ -110,7 +117,14 @@ const HomeScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.containerCard}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refresh}
+              onRefresh={onRefresh}
+            />
+          }
+        >
           {items.map((item) => {
             return (
               <View style={styles.item} key={item.id}>
