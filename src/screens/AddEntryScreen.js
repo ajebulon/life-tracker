@@ -39,7 +39,10 @@ const AddEntryScreen = ({ navigation }) => {
   const createDbTable = () => {
     db.transaction((tx) => {
       tx.executeSql(
-        "create table if not exists items (id integer primary key not null, title text, target int, unit text);"
+        "\
+          create table if not exists items (item_id integer primary key not null, title text, target int, unit text); \
+          create table if not exists metrics (metric_id integer primary key not null, added date, value int, item_id integer not null, foreign key (item_id) references items (item_id));\
+        "
       );
     });
   };
