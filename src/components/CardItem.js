@@ -2,6 +2,8 @@ import React from "react";
 import { Alert, StyleSheet } from "react-native";
 import { Button, Card, Title, Paragraph, Text } from "react-native-paper";
 
+import * as SQLite from "expo-sqlite";
+
 const styles = StyleSheet.create({
   itemButton: {
     flex: 1,
@@ -24,8 +26,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const CardItem = (props) => {
-  const itemObject = props.itemObject;
+const db = SQLite.openDatabase("lifetracker.db");
+
+
+const CardItem = ({ itemObject, navigation }) => {
+
+  const addOneNewMetricsDb = () => {
+    const added = (new Date()).toISOString();
+    const value = 1;
+    const item_id = itemObject.item_id;
+
+    console.log("[Added / Value / Item]: [" + added + "/" + value + "/" + item_id + "]");
+  }
+
+  const goToSummary = () => {
+    navigation.navigate("Summary", {itemObject: itemObject});
+  };
+
+  addOneNewMetricsDb(itemObject);
+
   return (
     <Card mode="outlined" onLongPress={() => console.log("Card item-" + itemObject.id + " long-pressed")}>
       <Card.Content>
@@ -42,7 +61,7 @@ const CardItem = (props) => {
         <Button mode="contained" style={styles.itemButton} onPress={() => console.log("+1 to item-" + itemObject.id)}>
           Plus
         </Button>
-        <Button mode="contained" style={styles.itemButton}>
+        <Button mode="contained" style={styles.itemButton} onPress={goToSummary}>
           Summary
         </Button>
         <Button mode="contained" style={styles.itemButton}>

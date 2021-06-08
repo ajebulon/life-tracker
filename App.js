@@ -8,6 +8,7 @@ import {
 
 import HomeScreen from "./src/screens/HomeScreen";
 import AddEntryScreen from "./src/screens/AddEntryScreen";
+import SummaryScreen from "./src/screens/SummaryScreen";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,12 @@ const App = () => {
           component={AddEntryScreen} 
           options={{title: "New Entry"}}
           />
+        <Stack.Screen 
+          name="Summary" 
+          component={SummaryScreen} 
+          options={{title: "Summary"}}
+          />
+          
       </Stack.Navigator>
     </NavigationContainer>
   );

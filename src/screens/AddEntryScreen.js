@@ -47,7 +47,7 @@ const AddEntryScreen = ({ navigation }) => {
     });
   };
 
-  const storeItemToDb = () => {
+  const addNewItemsDb = () => {
     db.transaction((tx) => {
       tx.executeSql(
         "insert into items (title, target, unit) values (?, ?, ?)",
@@ -65,7 +65,7 @@ const AddEntryScreen = ({ navigation }) => {
         "Success",
         "" + title + " target is " + target + " per " + unit
       );
-      storeItemToDb();
+      addNewItemsDb();
       navigation.navigate("Home", {updateFlag: true});
     } else {
       Alert.alert("Error", "Please insert title name");

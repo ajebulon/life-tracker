@@ -41,27 +41,18 @@ const styles = StyleSheet.create({
 
 const db = SQLite.openDatabase("lifetracker.db");
 
-const Item = ({ props }) => {
-  return (
-    <Text>
-      {props.title} target is {props.target} per {props.unit}
-    </Text>
-  );
-};
-
 const HomeScreen = ({ navigation, route }) => {
   const [items, setItems] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
-
   useEffect(() => {
     createDbTable();
-    getItemsFromDb();
+    getAllItemsDb();
   }, [route.params]);
 
   const onRefresh = () => {
     setRefresh(true);
-    getItemsFromDb();
+    getAllItemsDb();
     setRefresh(false);
   }
 
@@ -78,7 +69,7 @@ const HomeScreen = ({ navigation, route }) => {
     });
   };
 
-  const getItemsFromDb = () => {
+  const getAllItemsDb = () => {
     db.transaction((tx) => {
       tx.executeSql("select * from items", [], (_, { rows }) => {
         var thisItem;
@@ -92,7 +83,7 @@ const HomeScreen = ({ navigation, route }) => {
     });
   };
 
-  const deleteAllItems = () => {
+  const deleteAllItemsDb = () => {
     db.transaction((tx) => {
       tx.executeSql("delete from items", [], []);
     });
@@ -100,7 +91,7 @@ const HomeScreen = ({ navigation, route }) => {
     setItems([]);
   };
 
-  const onPressHandler = () => {
+  const goToAddEntry = () => {
     navigation.navigate("AddEntry");
   };
 
@@ -117,16 +108,16 @@ const HomeScreen = ({ navigation, route }) => {
         >
           {items.map((item) => {
             return (
-              <CardItem key={item.item_id} itemObject={item}/>
+              <CardItem key={item.item_id} itemObject={item} navigation={navigation}/>
             );
           })}
         <View styles={{height: 64}}><Text style={{fontSize: 80}}></Text></View>
         </ScrollView>
       </View>
       <View style={styles.button}>
-        <StylishButton icon="trash-can" label="Clean" onPressHandler={deleteAllItems} />
+        <StylishButton icon="trash-can" label="Clean" onPressHandler={deleteAllItemsDb} />
       </View>
-      <FAB style={styles.fab} icon="plus" onPress={onPressHandler} />
+      <FAB style={styles.fab} icon="plus" onPress={goToAddEntry} />
     </View>
   );
 };
