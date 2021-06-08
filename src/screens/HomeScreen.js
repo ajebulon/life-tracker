@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, ScrollView, RefreshControl, Alert } from "react
 import { FAB } from "react-native-paper";
 import * as SQLite from "expo-sqlite";
 
-import StylishButton from "../components/StylishButton";
 import CardItem from "../components/CardItem";
 
 const styles = StyleSheet.create({

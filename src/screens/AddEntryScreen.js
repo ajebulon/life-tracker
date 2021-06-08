@@ -1,27 +1,33 @@
 import React, { useState } from "react";
 import { Alert, Keyboard, StyleSheet, View } from "react-native";
-import { TextInput } from "react-native-paper";
+import { TextInput, FAB } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import * as SQLite from "expo-sqlite";
-
-import StylishButton from "../components/StylishButton";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
     backgroundColor: "#ffffff",
+    // justifyContent: "center",
+    alignSelf: "center",
   },
 
   containerCard: {
-    margin: "2%",
+    margin: "5%",
     backgroundColor: "#ffffff00",
   },
 
   cardElem: {
-    marginTop: "2.5%",
-    marginBottom: "2.5%",
+    marginBottom: "5%",
     backgroundColor: "#ffffff00",
+  },
+
+  fab: {
+    position: "absolute",
+    margin: 32,
+    right: 0,
+    bottom: 0,
   },
 });
 
@@ -68,7 +74,7 @@ const AddEntryScreen = ({ navigation }) => {
           onSubmitEditing={Keyboard.dismiss}
         />
 
-        <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+        <View style={{ ...styles.cardElem, flexDirection: "row"}}>
           <TextInput
             label="Target"
             value={target.toString()}
@@ -93,15 +99,8 @@ const AddEntryScreen = ({ navigation }) => {
             <Picker.Item label="Week" value="week" />
           </Picker>
         </View>
-
-        <View style={{ flex: 1 }}></View>
-
-        <StylishButton
-          label="Save"
-          icon="content-save"
-          onPressHandler={saveData}
-        />
       </View>
+      <FAB style={styles.fab} icon="content-save" onPress={saveData} />
     </View>
   );
 };
