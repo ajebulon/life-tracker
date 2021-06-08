@@ -124,6 +124,7 @@ const HomeScreen = ({ navigation, route }) => {
               <CardItem key={item.id} id={item.id} title={item.title} target={item.target} unit={item.unit}/>
             );
           })}
+        <View styles={{height: 64}}><Text style={{fontSize: 80}}></Text></View>
         </ScrollView>
       </View>
       <View style={styles.button}>

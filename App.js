@@ -24,7 +24,7 @@ const App = () => {
         <Stack.Screen 
           name="Home" 
           component={HomeScreen} 
-          options={{title: "Home"}}
+          options={{title: "Life Tracker"}}
           />
         <Stack.Screen 
           name="AddEntry" 

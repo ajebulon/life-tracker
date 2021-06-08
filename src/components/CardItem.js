@@ -1,7 +1,6 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
-import { Button, Card, Title, Paragraph, View, Text } from "react-native-paper";
-import StylishButton from "../components/StylishButton";
+import { StyleSheet } from "react-native";
+import { Button, Card, Title, Paragraph, Text } from "react-native-paper";
 
 const styles = StyleSheet.create({
   itemButton: {
@@ -17,27 +16,31 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 
+  dailyStatsTitle: {
+    marginTop: 32,
+    fontSize: 20,
+    alignSelf: "center",
+  },
+
   dailyStats: {
-    margin: 10,
+    marginBottom: 32,
     fontSize: 64,
     alignSelf: "center",
-  }
+  },
 });
 
 const CardItem = (props) => {
   return (
     <Card mode="outlined">
       <Card.Content>
-        <Title>{props.id}. {props.title}</Title>
+        <Title>
+          {props.id}. {props.title}
+        </Title>
         <Paragraph>
           Your target is {props.target} per {props.unit}. Keep working on it!
         </Paragraph>
-        <Image
-          style={styles.thumbnail}
-          source={{
-            uri: "https://image.similarpng.com/thumbnail/2020/08/Digital-camera-Premium-Vector-PNG.png",
-          }}
-        />
+        <Text style={styles.dailyStatsTitle}>Daily Achievement</Text>
+        <Text style={styles.dailyStats}>{props.target/2}</Text>
       </Card.Content>
       <Card.Actions style={{ justifyContent: "space-evenly" }}>
         <Button mode="contained" style={styles.itemButton}>
