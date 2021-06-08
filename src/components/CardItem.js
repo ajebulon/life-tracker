@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import { Button, Card, Title, Paragraph, Text } from "react-native-paper";
 
 const styles = StyleSheet.create({
@@ -27,10 +27,10 @@ const styles = StyleSheet.create({
 const CardItem = (props) => {
   const itemObject = props.itemObject;
   return (
-    <Card mode="outlined">
+    <Card mode="outlined" onLongPress={() => console.log("Card item-" + itemObject.id + " long-pressed")}>
       <Card.Content>
         <Title>
-          {itemObject.id}. {itemObject.title}
+          {itemObject.item_id}. {itemObject.title}
         </Title>
         <Paragraph>
           Your target is {itemObject.target} per {itemObject.unit}. Keep working on it!
@@ -39,7 +39,7 @@ const CardItem = (props) => {
         <Text style={styles.dailyStats}>{itemObject.target/2}</Text>
       </Card.Content>
       <Card.Actions style={{ justifyContent: "space-evenly" }}>
-        <Button mode="contained" style={styles.itemButton}>
+        <Button mode="contained" style={styles.itemButton} onPress={() => console.log("+1 to item-" + itemObject.id)}>
           Plus
         </Button>
         <Button mode="contained" style={styles.itemButton}>

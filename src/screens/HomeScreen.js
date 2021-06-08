@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const db = SQLite.openDatabase("trackedItems.db");
+const db = SQLite.openDatabase("lifetracker.db");
 
 const Item = ({ props }) => {
   return (
@@ -56,12 +56,12 @@ const HomeScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     createDbTable();
-    getEntriesFromDb();
+    getItemsFromDb();
   }, [route.params]);
 
   const onRefresh = () => {
     setRefresh(true);
-    getEntriesFromDb();
+    getItemsFromDb();
     setRefresh(false);
   }
 
@@ -78,7 +78,7 @@ const HomeScreen = ({ navigation, route }) => {
     });
   };
 
-  const getEntriesFromDb = () => {
+  const getItemsFromDb = () => {
     db.transaction((tx) => {
       tx.executeSql("select * from items", [], (_, { rows }) => {
         var thisItem;
@@ -92,16 +92,12 @@ const HomeScreen = ({ navigation, route }) => {
     });
   };
 
-  const deleteAllEntries = () => {
+  const deleteAllItems = () => {
     db.transaction((tx) => {
       tx.executeSql("delete from items", [], []);
     });
 
     setItems([]);
-  };
-
-  const testHandler = () => {
-    console.log("Test DB");
   };
 
   const onPressHandler = () => {
@@ -121,14 +117,14 @@ const HomeScreen = ({ navigation, route }) => {
         >
           {items.map((item) => {
             return (
-              <CardItem key={item.id} itemObject={item}/>
+              <CardItem key={item.item_id} itemObject={item}/>
             );
           })}
         <View styles={{height: 64}}><Text style={{fontSize: 80}}></Text></View>
         </ScrollView>
       </View>
       <View style={styles.button}>
-        <StylishButton icon="trash-can" label="Clean" onPressHandler={deleteAllEntries} />
+        <StylishButton icon="trash-can" label="Clean" onPressHandler={deleteAllItems} />
       </View>
       <FAB style={styles.fab} icon="plus" onPress={onPressHandler} />
     </View>

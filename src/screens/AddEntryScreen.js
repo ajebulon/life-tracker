@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const db = SQLite.openDatabase("trackedItems.db");
+const db = SQLite.openDatabase("lifetracker.db");
 
 const AddEntryScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
@@ -47,7 +47,7 @@ const AddEntryScreen = ({ navigation }) => {
     });
   };
 
-  const storeEntryToDb = () => {
+  const storeItemToDb = () => {
     db.transaction((tx) => {
       tx.executeSql(
         "insert into items (title, target, unit) values (?, ?, ?)",
@@ -65,7 +65,7 @@ const AddEntryScreen = ({ navigation }) => {
         "Success",
         "" + title + " target is " + target + " per " + unit
       );
-      storeEntryToDb();
+      storeItemToDb();
       navigation.navigate("Home", {updateFlag: true});
     } else {
       Alert.alert("Error", "Please insert title name");
