@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, ScrollView, RefreshControl } from "react-native";
+import { StyleSheet, View, Text, ScrollView, RefreshControl, Alert } from "react-native";
 import { FAB } from "react-native-paper";
 import * as SQLite from "expo-sqlite";
 
@@ -11,6 +11,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     margin: 32,
     right: 0,
+    bottom: 0,
+  },
+
+  fabClean: {
+    position: "absolute",
+    margin: 32,
+    left: 0,
     bottom: 0,
   },
 
@@ -59,12 +66,15 @@ const HomeScreen = ({ navigation, route }) => {
   const createDbTable = () => {
     db.transaction((tx) => {
       tx.executeSql(
-        "\
-          create table if not exists items (item_id integer primary key not null, title text, target int, unit text); \
-          create table if not exists metrics (metric_id integer primary key not null, added date, value int, item_id integer not null, foreign key (item_id) references items (item_id));\
-        "
-      // [],
-      // () => console.log("DB is created")
+        "create table if not exists items (item_id integer primary key not null, title text, target int, unit text);",
+      [],
+      () => console.log("ItemsDB is created")
+      );
+
+      tx.executeSql(
+        "create table if not exists metrics (metric_id integer primary key not null, timestamp text, value int, item_id integer not null, foreign key(item_id) references items(item_id));",
+      [],
+      () => console.log("MetricsDB is created")
       );
     });
   };
@@ -83,12 +93,22 @@ const HomeScreen = ({ navigation, route }) => {
     });
   };
 
-  const deleteAllItemsDb = () => {
+  const deleteDb = () => {
     db.transaction((tx) => {
       tx.executeSql("delete from items", [], []);
+      tx.executeSql("drop table items", [], []);
+    });
+
+    db.transaction((tx) => {
+      tx.executeSql("delete from metrics", [], []);
+      tx.executeSql("drop table metrics", [], []);
     });
 
     setItems([]);
+
+    createDbTable();
+
+    Alert.alert("Success", "DB is now recreated");
   };
 
   const goToAddEntry = () => {
@@ -114,9 +134,7 @@ const HomeScreen = ({ navigation, route }) => {
         <View styles={{height: 64}}><Text style={{fontSize: 80}}></Text></View>
         </ScrollView>
       </View>
-      <View style={styles.button}>
-        <StylishButton icon="trash-can" label="Clean" onPressHandler={deleteAllItemsDb} />
-      </View>
+      <FAB style={styles.fabClean} icon="trash-can-outline" onPress={deleteDb} />
       <FAB style={styles.fab} icon="plus" onPress={goToAddEntry} />
     </View>
   );

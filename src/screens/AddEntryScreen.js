@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Alert, Keyboard, StyleSheet, View } from "react-native";
-import { TextInput, Button } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import * as SQLite from "expo-sqlite";
 
@@ -32,21 +32,6 @@ const AddEntryScreen = ({ navigation }) => {
   const [target, setTarget] = useState(0);
   const [unit, setUnit] = useState("day");
 
-  useEffect(() => {
-    createDbTable();
-  });
-
-  const createDbTable = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "\
-          create table if not exists items (item_id integer primary key not null, title text, target int, unit text); \
-          create table if not exists metrics (metric_id integer primary key not null, added date, value int, item_id integer not null, foreign key (item_id) references items (item_id));\
-        "
-      );
-    });
-  };
-
   const addNewItemsDb = () => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -54,7 +39,7 @@ const AddEntryScreen = ({ navigation }) => {
         [title, target, unit]
       );
       tx.executeSql("select * from items", [], (_, { rows }) => {
-        console.log(JSON.stringify(rows));
+        // console.log(JSON.stringify(rows));
       });
     });
   };

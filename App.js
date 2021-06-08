@@ -9,6 +9,7 @@ import {
 import HomeScreen from "./src/screens/HomeScreen";
 import AddEntryScreen from "./src/screens/AddEntryScreen";
 import SummaryScreen from "./src/screens/SummaryScreen";
+import CounterScreen from "./src/screens/CounterScreen";
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,11 @@ const App = () => {
           name="Summary" 
           component={SummaryScreen} 
           options={{title: "Summary"}}
+          />
+        <Stack.Screen 
+          name="Counter" 
+          component={CounterScreen} 
+          options={{title: "Counter"}}
           />
           
       </Stack.Navigator>
