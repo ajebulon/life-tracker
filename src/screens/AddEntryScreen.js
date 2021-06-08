@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
 
   containerCard: {
-    margin: "5%",
+    margin: "2%",
     backgroundColor: "#ffffff00",
   },
 
@@ -88,7 +88,6 @@ const AddEntryScreen = ({ navigation }) => {
             label="Target"
             value={target.toString()}
             onChangeText={(target) => {
-              console.log("State: " + target.length);
               if (target.length == 0) {
                 setTarget(0);
               } else {

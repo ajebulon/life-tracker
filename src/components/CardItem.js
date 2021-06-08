@@ -24,15 +24,13 @@ const styles = StyleSheet.create({
   }
 });
 
-const CardItem = () => {
+const CardItem = (props) => {
   return (
     <Card mode="outlined">
       <Card.Content>
-        <Title>1. This is the title of the card</Title>
+        <Title>{props.id}. {props.title}</Title>
         <Paragraph>
-          This is supposed to be the card content described as a paragraph. I
-          just want to make sure that multiple-line usage is supported in this
-          Card from react-native-paper
+          Your target is {props.target} per {props.unit}. Keep working on it!
         </Paragraph>
         <Image
           style={styles.thumbnail}

@@ -4,6 +4,7 @@ import { FAB } from "react-native-paper";
 import * as SQLite from "expo-sqlite";
 
 import StylishButton from "../components/StylishButton";
+import CardItem from "../components/CardItem";
 
 const styles = StyleSheet.create({
   fab: {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
   },
 
   containerCard: {
-    margin: "5%",
+    margin: "2%",
     backgroundColor: "#ffffff00",
   },
 
@@ -29,14 +30,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     margin: 32,
     bottom: 0,
-  },
-
-  item: {
-    marginBottom: "5%",
-    backgroundColor: "#4ae1fa",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 40,
   },
 
   text: {
@@ -128,9 +121,7 @@ const HomeScreen = ({ navigation, route }) => {
         >
           {items.map((item) => {
             return (
-              <View style={styles.item} key={item.id}>
-                <Text style={styles.text}>{item.title}</Text>
-              </View>
+              <CardItem key={item.id} id={item.id} title={item.title} target={item.target} unit={item.unit}/>
             );
           })}
         </ScrollView>
