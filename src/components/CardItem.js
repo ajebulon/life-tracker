@@ -5,15 +5,10 @@ import { Button, Card, Title, Paragraph, Text } from "react-native-paper";
 const styles = StyleSheet.create({
   itemButton: {
     flex: 1,
-    margin: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 5,
     borderRadius: 20,
-  },
-
-  thumbnail: {
-    width: 100,
-    height: 100,
-    margin: 20,
-    alignSelf: "center",
   },
 
   dailyStatsTitle: {
@@ -30,17 +25,18 @@ const styles = StyleSheet.create({
 });
 
 const CardItem = (props) => {
+  const itemObject = props.itemObject;
   return (
     <Card mode="outlined">
       <Card.Content>
         <Title>
-          {props.id}. {props.title}
+          {itemObject.id}. {itemObject.title}
         </Title>
         <Paragraph>
-          Your target is {props.target} per {props.unit}. Keep working on it!
+          Your target is {itemObject.target} per {itemObject.unit}. Keep working on it!
         </Paragraph>
-        <Text style={styles.dailyStatsTitle}>Daily Achievement</Text>
-        <Text style={styles.dailyStats}>{props.target/2}</Text>
+        <Text style={styles.dailyStatsTitle}>Daily Stats</Text>
+        <Text style={styles.dailyStats}>{itemObject.target/2}</Text>
       </Card.Content>
       <Card.Actions style={{ justifyContent: "space-evenly" }}>
         <Button mode="contained" style={styles.itemButton}>

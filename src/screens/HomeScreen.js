@@ -121,7 +121,7 @@ const HomeScreen = ({ navigation, route }) => {
         >
           {items.map((item) => {
             return (
-              <CardItem key={item.id} id={item.id} title={item.title} target={item.target} unit={item.unit}/>
+              <CardItem key={item.id} itemObject={item}/>
             );
           })}
         <View styles={{height: 64}}><Text style={{fontSize: 80}}></Text></View>
