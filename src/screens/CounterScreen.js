@@ -33,12 +33,25 @@ const styles = StyleSheet.create({
   },
 
   deltaTitleContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#FFFFFF",
   },
 
   deltaTitle: {
     fontSize: 32,
+  },
+
+  deltaContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+  },
+
+  counterContainer: {
+  
   },
 
   delta: {
@@ -65,10 +78,10 @@ const CounterScreen = ({ navigation, route }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         <View style={{ flex: 2, flexDirection: "row" }}>
-          <View style={{...styles.deltaTitleContainer, flex: 1, backgroundColor: "red" }}>
+          <View style={styles.deltaTitleContainer}>
             <Text style={styles.deltaTitle}>Delta</Text>
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={styles.deltaContainer}>
             <TextInput
               keyboardType="numeric"
               value={delta.toString()}
@@ -100,8 +113,26 @@ const CounterScreen = ({ navigation, route }) => {
         <View
           style={{ flex: 3, flexDirection: "row", backgroundColor: "white" }}
         >
-          <View style={{ flex: 1, backgroundColor: "green" }}></View>
-          <View style={{ flex: 1, backgroundColor: "yellow" }}></View>
+          <View style={{ flex: 1, backgroundColor: "green", alignItems: "flex-start", justifyContent: "center"}}>
+            <Button
+              icon="plus"
+              labelStyle={{fontSize: 64}}
+              onPress={() => setCount(count + delta)}
+            />
+          </View>
+          <View style={{ flex: 1, backgroundColor: "yellow", alignItems: "flex-end", justifyContent: "center"}}>
+              <Button
+              icon="minus"
+              labelStyle={{fontSize: 64}}
+              onPress={() => {
+                if ((count - delta) < 0) {
+                  setCount(0);
+                } else {
+                  setCount(count - delta);
+                }
+              }}
+            />
+          </View>
         </View>
         <View style={{ flex: 4, backgroundColor: "white" }}></View>
         <FAB
