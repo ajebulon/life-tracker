@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Alert, Keyboard, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  Keyboard,
+  StyleSheet,
+  View,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { TextInput, FAB } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import * as SQLite from "expo-sqlite";
@@ -57,51 +63,51 @@ const AddEntryScreen = ({ navigation }) => {
         "" + title + " target is " + target + " per " + unit
       );
       addNewItemsDb();
-      navigation.navigate("Home", {updateFlag: true});
+      navigation.navigate("Home", { updateFlag: true });
     } else {
       Alert.alert("Error", "Please insert title name");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.containerCard}>
-        <TextInput
-          label="Title"
-          value={title}
-          onChangeText={(title) => setTitle(title)}
-          style={styles.cardElem}
-          onSubmitEditing={Keyboard.dismiss}
-        />
-
-        <View style={{ ...styles.cardElem, flexDirection: "row"}}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <View style={styles.containerCard}>
           <TextInput
-            label="Target"
-            value={target.toString()}
-            onChangeText={(target) => {
-              if (target.length == 0) {
-                setTarget(0);
-              } else {
-                setTarget(parseInt(target));
-              }
-            }}
-            style={{ ...styles.cardElem, marginEnd: "2.5%", width: "75%" }}
-            keyboardType="numeric"
-            onSubmitEditing={Keyboard.dismiss}
+            label="Title"
+            value={title}
+            onChangeText={(title) => setTitle(title)}
+            style={styles.cardElem}
           />
-          <Picker
-            selectedValue={unit}
-            onValueChange={(itemValue) => setUnit(itemValue)}
-            style={{ ...styles.cardElem, marginEnd: "2.5%", width: "25%" }}
-            mode="dropdown"
-          >
-            <Picker.Item label="Day" value="day" />
-            <Picker.Item label="Week" value="week" />
-          </Picker>
+
+          <View style={{ ...styles.cardElem, flexDirection: "row" }}>
+            <TextInput
+              label="Target"
+              value={target.toString()}
+              onChangeText={(target) => {
+                if (target.length == 0) {
+                  setTarget(0);
+                } else {
+                  setTarget(parseInt(target));
+                }
+              }}
+              style={{ ...styles.cardElem, marginEnd: "2.5%", width: "75%" }}
+              keyboardType="numeric"
+            />
+            <Picker
+              selectedValue={unit}
+              onValueChange={(itemValue) => setUnit(itemValue)}
+              style={{ ...styles.cardElem, marginEnd: "2.5%", width: "25%" }}
+              mode="dropdown"
+            >
+              <Picker.Item label="Day" value="day" />
+              <Picker.Item label="Week" value="week" />
+            </Picker>
+          </View>
         </View>
+        <FAB style={styles.fab} icon="content-save" onPress={saveData} />
       </View>
-      <FAB style={styles.fab} icon="content-save" onPress={saveData} />
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -140,7 +140,7 @@ const CardItem = ({ itemObject, navigation }) => {
           style={styles.itemButton}
           onPress={addOneNewMetricsDb}
           onLongPress={delOneLastMetricsDb}
-          icon="plus-thick"
+          icon="plus-minus"
         >
           {/* Plus */}
         </Button>
