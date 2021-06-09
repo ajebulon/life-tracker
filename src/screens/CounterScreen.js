@@ -58,7 +58,7 @@ const CounterScreen = ({ navigation, route }) => {
         <View style={{ flex: 2, backgroundColor: "red" }}>
           <TextInput
             keyboardType="numeric"
-            placeholder="Delta"
+            placeholder="DELTA"
             style={{ ...styles.delta, flex: 1 }}
           />
         </View>
@@ -70,7 +70,11 @@ const CounterScreen = ({ navigation, route }) => {
             onChangeText={(value) => setCount(parseInt(value))}
           />
         </View>
-        <View style={{ flex: 3, backgroundColor: "white" }}></View>
+        <View style={{ flex: 3, flexDirection: "row", backgroundColor: "white" }}>
+          <View style={{ flex: 1, backgroundColor: "green" }}></View>
+          <View style={{ flex: 1, backgroundColor: "yellow" }}></View>
+        </View>
+        <View style={{ flex: 4, backgroundColor: "white" }}></View>
         <FAB
           style={styles.fabRight}
           icon="content-save"
