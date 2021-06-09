@@ -32,6 +32,15 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 
+  deltaTitleContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  deltaTitle: {
+    fontSize: 32,
+  },
+
   delta: {
     fontSize: 32,
     alignSelf: "center",
@@ -55,22 +64,42 @@ const CounterScreen = ({ navigation, route }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
-        <View style={{ flex: 2, backgroundColor: "red" }}>
-          <TextInput
-            keyboardType="numeric"
-            placeholder="DELTA"
-            style={{ ...styles.delta, flex: 1 }}
-          />
+        <View style={{ flex: 2, flexDirection: "row" }}>
+          <View style={{...styles.deltaTitleContainer, flex: 1, backgroundColor: "red" }}>
+            <Text style={styles.deltaTitle}>Delta</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <TextInput
+              keyboardType="numeric"
+              value={delta.toString()}
+              style={ styles.delta }
+              onChangeText={(value) => {
+                if (value.length == 0) {
+                  setDelta(0);
+                } else {
+                  setDelta(parseInt(value));
+                }
+              }}
+            />
+          </View>
         </View>
         <View style={{ flex: 8, backgroundColor: "blue" }}>
           <TextInput
             keyboardType="numeric"
             value={count.toString()}
             style={{ ...styles.counter, flex: 5 }}
-            onChangeText={(value) => setCount(parseInt(value))}
+            onChangeText={(value) => {
+              if (value.length == 0) {
+                setCount(0);
+              } else {
+                setCount(parseInt(value));
+              }
+            }}
           />
         </View>
-        <View style={{ flex: 3, flexDirection: "row", backgroundColor: "white" }}>
+        <View
+          style={{ flex: 3, flexDirection: "row", backgroundColor: "white" }}
+        >
           <View style={{ flex: 1, backgroundColor: "green" }}></View>
           <View style={{ flex: 1, backgroundColor: "yellow" }}></View>
         </View>
