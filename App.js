@@ -36,12 +36,12 @@ const App = () => {
         <Stack.Screen 
           name="Summary" 
           component={SummaryScreen} 
-          options={{title: "Summary"}}
+          options={({ route }) => ({ title: "Summary for " + route.params.itemObject.title.toUpperCase() })}
           />
         <Stack.Screen 
           name="Counter" 
           component={CounterScreen} 
-          options={{title: "Counter"}}
+          options={({ route }) => ({ title: "Counter for " + route.params.itemObject.title.toUpperCase() })}
           />
           
       </Stack.Navigator>
