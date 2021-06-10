@@ -9,6 +9,7 @@ import {
   Pressable,
 } from "react-native";
 import { FAB } from "react-native-paper";
+import * as SQLite from "expo-sqlite";
 
 const styles = StyleSheet.create({
   container: {
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
   deltaTitleContainer: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-end",
     backgroundColor: "#FFFFFF",
   },
 
@@ -46,13 +47,14 @@ const styles = StyleSheet.create({
   deltaContainer: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
     backgroundColor: "#FFFFFF",
   },
 
   delta: {
     fontSize: 32,
-    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   counter: {
@@ -60,6 +62,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
+
+const db = SQLite.openDatabase("lifetracker.db");
 
 const CounterScreen = ({ navigation, route }) => {
   const itemObject = route.params.itemObject;
@@ -70,12 +74,34 @@ const CounterScreen = ({ navigation, route }) => {
     navigation.navigate("Home");
   };
 
+  const addNewMetricsDb = () => {
+    const item_id = itemObject.item_id;
+
+    if (count > 0) {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "insert into metrics (timestamp, value, item_id) values (date('now'), ?, ?)",
+          [count, item_id],
+          [],
+          (_, error) => {
+            console.log(error);
+          }
+        );
+        // tx.executeSql("select * from metrics", [], (_, { rows }) => {
+        //   console.log(JSON.stringify(rows));
+        // });
+      });
+    }
+
+    goToHome();
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         <View style={{ flex: 2, flexDirection: "row" }}>
           <View style={styles.deltaTitleContainer}>
-            <Text style={styles.deltaTitle}>Delta</Text>
+            <Text style={styles.deltaTitle}>+</Text>
           </View>
           <View style={styles.deltaContainer}>
             <TextInput
@@ -154,7 +180,7 @@ const CounterScreen = ({ navigation, route }) => {
         <FAB
           style={styles.fabRight}
           icon="content-save"
-          onPress={() => console.log("Saving data")}
+          onPress={addNewMetricsDb}
         />
         <FAB style={styles.fabLeft} icon="home" onPress={goToHome} />
       </View>

@@ -63,7 +63,11 @@ const CardItem = ({ itemObject, navigation }) => {
         "select * from metrics where timestamp=date('now') and item_id=?",
         [item_id],
         (_, { rows }) => {
-          setDailyCount(rows.length);
+          var totalEntries = 0;
+          for (let i = 0; i < rows.length; i++) {
+            totalEntries += rows.item(i).value;
+          }
+          setDailyCount(totalEntries);
         },
         (_, error) => {
           console.log(error);
@@ -97,7 +101,11 @@ const CardItem = ({ itemObject, navigation }) => {
         "select * from metrics where timestamp=date('now') and item_id=?",
         [item_id],
         (_, { rows }) => {
-          setDailyCount(rows.length);
+          var totalEntries = 0;
+          for (let i = 0; i < rows.length; i++) {
+            totalEntries += rows.item(i).value;
+          }
+          setDailyCount(totalEntries);
         }
         // (_, error) => {
         //   console.log(error);
