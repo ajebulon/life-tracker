@@ -49,11 +49,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFFFFF",
   },
-
-  counterContainer: {
   
-  },
-
   delta: {
     fontSize: 32,
     alignSelf: "center",
@@ -85,7 +81,7 @@ const CounterScreen = ({ navigation, route }) => {
             <TextInput
               keyboardType="numeric"
               value={delta.toString()}
-              style={ styles.delta }
+              style={styles.delta}
               onChangeText={(value) => {
                 if (value.length == 0) {
                   setDelta(0);
@@ -96,45 +92,72 @@ const CounterScreen = ({ navigation, route }) => {
             />
           </View>
         </View>
-        <View style={{ flex: 8, backgroundColor: "blue" }}>
-          <TextInput
-            keyboardType="numeric"
-            value={count.toString()}
-            style={{ ...styles.counter, flex: 5 }}
-            onChangeText={(value) => {
-              if (value.length == 0) {
-                setCount(0);
-              } else {
-                setCount(parseInt(value));
-              }
-            }}
-          />
-        </View>
         <View
-          style={{ flex: 3, flexDirection: "row", backgroundColor: "white" }}
+          style={{ flex: 8, backgroundColor: "#FFFFFF", flexDirection: "row" }}
         >
-          <View style={{ flex: 1, backgroundColor: "green", alignItems: "flex-start", justifyContent: "center"}}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#FFFFFF",
+              alignItems: "flex-start",
+              justifyContent: "center",
+            }}
+          >
             <Button
-              icon="plus"
-              labelStyle={{fontSize: 64}}
-              onPress={() => setCount(count + delta)}
-            />
-          </View>
-          <View style={{ flex: 1, backgroundColor: "yellow", alignItems: "flex-end", justifyContent: "center"}}>
-              <Button
-              icon="minus"
-              labelStyle={{fontSize: 64}}
+              labelStyle={{ fontSize: 64, color: "black" }}
               onPress={() => {
-                if ((count - delta) < 0) {
+                if (count - delta < 0) {
                   setCount(0);
                 } else {
                   setCount(count - delta);
                 }
               }}
+            >
+              -
+            </Button>
+          </View>
+
+          <View style={{ flex: 3, justifyContent: "center" }}>
+            <TextInput
+              keyboardType="numeric"
+              value={count.toString()}
+              style={{ ...styles.counter }}
+              onChangeText={(value) => {
+                if (value.length == 0) {
+                  setCount(0);
+                } else if (parseInt(value) > 9999) {
+                  setCount(9999);
+                } else {
+                  setCount(parseInt(value));
+                }
+              }}
             />
           </View>
+
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#FFFFFF",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              labelStyle={{ fontSize: 64, color: "black" }}
+              onPress={() => {
+                if (count + delta > 9999) {
+                  setCount(9999);
+                } else {
+                  setCount(count + delta);
+                }
+              }}
+            >
+              +
+            </Button>
+          </View>
         </View>
-        <View style={{ flex: 4, backgroundColor: "white" }}></View>
+
+        <View style={{ flex: 2, backgroundColor: "#FFFFFF" }}></View>
         <FAB
           style={styles.fabRight}
           icon="content-save"
