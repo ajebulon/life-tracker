@@ -5,10 +5,10 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   TouchableWithoutFeedback,
+  Pressable,
 } from "react-native";
-import { FAB, Button } from "react-native-paper";
+import { FAB } from "react-native-paper";
 
 const styles = StyleSheet.create({
   container: {
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFFFFF",
   },
-  
+
   delta: {
     fontSize: 32,
     alignSelf: "center",
@@ -95,27 +95,24 @@ const CounterScreen = ({ navigation, route }) => {
         <View
           style={{ flex: 8, backgroundColor: "#FFFFFF", flexDirection: "row" }}
         >
-          <View
+          <Pressable
+            onPress={() => {
+              if (count - delta < 0) {
+                setCount(0);
+              } else {
+                setCount(count - delta);
+              }
+            }}
             style={{
               flex: 1,
               backgroundColor: "#FFFFFF",
-              alignItems: "flex-start",
+              alignItems: "center",
               justifyContent: "center",
+              alignSelf: "center",
             }}
           >
-            <Button
-              labelStyle={{ fontSize: 64, color: "black" }}
-              onPress={() => {
-                if (count - delta < 0) {
-                  setCount(0);
-                } else {
-                  setCount(count - delta);
-                }
-              }}
-            >
-              -
-            </Button>
-          </View>
+            <Text style={{ fontSize: 80 }}>-</Text>
+          </Pressable>
 
           <View style={{ flex: 3, justifyContent: "center" }}>
             <TextInput
@@ -134,7 +131,14 @@ const CounterScreen = ({ navigation, route }) => {
             />
           </View>
 
-          <View
+          <Pressable
+            onPress={() => {
+              if (count + delta > 9999) {
+                setCount(9999);
+              } else {
+                setCount(count + delta);
+              }
+            }}
             style={{
               flex: 1,
               backgroundColor: "#FFFFFF",
@@ -142,19 +146,8 @@ const CounterScreen = ({ navigation, route }) => {
               justifyContent: "center",
             }}
           >
-            <Button
-              labelStyle={{ fontSize: 64, color: "black" }}
-              onPress={() => {
-                if (count + delta > 9999) {
-                  setCount(9999);
-                } else {
-                  setCount(count + delta);
-                }
-              }}
-            >
-              +
-            </Button>
-          </View>
+            <Text style={{ fontSize: 80 }}>+</Text>
+          </Pressable>
         </View>
 
         <View style={{ flex: 2, backgroundColor: "#FFFFFF" }}></View>
