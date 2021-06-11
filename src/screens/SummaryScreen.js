@@ -52,6 +52,7 @@ const SummaryScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     getMetricsCount();
+    getDailyArray();
   }, []);
 
   const getMetricsCount = () => {
@@ -96,7 +97,6 @@ const SummaryScreen = ({ navigation, route }) => {
           
           tempList.push(thisDateSum);
           setDailyStats(tempList);
-          console.log("DailyStats: " + dailyStats);
         }
       );
     });
@@ -115,7 +115,6 @@ const SummaryScreen = ({ navigation, route }) => {
       </BarChart>
       <Text style={styles.stats}>{metricsCount}</Text>
       <Button onPress={goToHome} title="Home" />
-      <Button onPress={getDailyArray} title="SQL" />
 
     </View>
   );
