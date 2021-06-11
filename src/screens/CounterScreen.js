@@ -91,9 +91,10 @@ const CounterScreen = ({ navigation, route }) => {
         //   console.log(JSON.stringify(rows));
         // });
       });
+      navigation.navigate("Home", {newCounterFlag: count});
+    } else {
+      goToHome();
     }
-
-    goToHome();
   };
 
   return (

@@ -53,6 +53,9 @@ const HomeScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     createDbTable();
+  }, []);
+
+  useEffect(() => {
     getAllItemsDb();
   }, [route.params]);
 
@@ -127,7 +130,7 @@ const HomeScreen = ({ navigation, route }) => {
         >
           {items.map((item) => {
             return (
-              <CardItem key={item.item_id} itemObject={item} navigation={navigation}/>
+              <CardItem key={item.item_id} itemObject={item} navigation={navigation} route={route}/>
             );
           })}
         <View styles={{height: 64}}><Text style={{fontSize: 80}}></Text></View>

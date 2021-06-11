@@ -38,12 +38,12 @@ const styles = StyleSheet.create({
 
 const db = SQLite.openDatabase("lifetracker.db");
 
-const CardItem = ({ itemObject, navigation }) => {
+const CardItem = ({ itemObject, navigation, route }) => {
   const [dailyCount, setDailyCount] = useState(0);
 
   useEffect(() => {
     getDailyCount();
-  }, []);
+  }, [route.params]);
 
   const addOneNewMetricsDb = () => {
     const value = 1;
@@ -68,23 +68,6 @@ const CardItem = ({ itemObject, navigation }) => {
             totalEntries += rows.item(i).value;
           }
           setDailyCount(totalEntries);
-        },
-        (_, error) => {
-          console.log(error);
-        }
-      );
-    });
-  };
-
-  const delOneLastMetricsDb = () => {
-    const item_id = itemObject.item_id;
-
-    db.transaction((tx) => {
-      tx.executeSql(
-        "delete from metrics where metric_id=(select MAX(metric_id) from metrics where timestamp=date('now') and item_id=?)",
-        [item_id],
-        (_, { rows }) => {
-          getDailyCount();
         },
         (_, error) => {
           console.log(error);
@@ -147,8 +130,7 @@ const CardItem = ({ itemObject, navigation }) => {
           mode="contained"
           style={styles.itemButton}
           onPress={addOneNewMetricsDb}
-          onLongPress={delOneLastMetricsDb}
-          icon="plus-minus"
+          icon="plus"
         >
           {/* Plus */}
         </Button>
