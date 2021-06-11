@@ -46,23 +46,20 @@ const CardItem = ({ itemObject, navigation, route }) => {
   }, [route.params]);
 
   const addOneNewMetrics = () => {
-    const alertMsg = "Add single entry to " + itemObject.title.toUpperCase() + "?\n\n\n\nHint: You can add multiple entries by clicking on the CLOCK (rightmost) icon";
-    Alert.alert(
-      "",
-      alertMsg,
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
+    const alertMsg =
+      "Add single entry to " + itemObject.title.toUpperCase() + "?";
+    Alert.alert("", alertMsg, [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          addOneNewMetricsDb();
         },
-        {
-          text: "OK",
-          onPress: () => {
-            addOneNewMetricsDb();
-          },
-        }
-      ]
-    );
+      },
+    ]);
   };
 
   const addOneNewMetricsDb = () => {
@@ -109,12 +106,60 @@ const CardItem = ({ itemObject, navigation, route }) => {
             totalEntries += rows.item(i).value;
           }
           setDailyCount(totalEntries);
+        },
+        (_, error) => {
+          console.log(error);
         }
-        // (_, error) => {
-        //   console.log(error);
-        // }
       );
     });
+  };
+
+  const deleteItemFromMetricsDb = () => {
+    const item_id = itemObject.item_id;
+
+    db.transaction((tx) => {
+      tx.executeSql(
+        "delete from metrics where item_id=?",
+        [item_id],
+        [],
+        (_, error) => {
+          console.log(error);
+        }
+      );
+    });
+  };
+
+  const deleteItemFromItemsDb = () => {
+    const item_id = itemObject.item_id;
+
+    db.transaction((tx) => {
+      tx.executeSql(
+        "delete from items where item_id=?",
+        [item_id],
+        [],
+        (_, error) => {
+          console.log(error);
+        }
+      );
+    });
+  };
+
+  const deleteItem = () => {
+    const alertMsg =
+      "Do you want to delete " + itemObject.title.toUpperCase() + "?";
+    Alert.alert("", alertMsg, [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          deleteItemFromMetricsDb();
+          deleteItemFromItemsDb();
+        },
+      },
+    ]);
   };
 
   const goToSummary = () => {
@@ -129,9 +174,9 @@ const CardItem = ({ itemObject, navigation, route }) => {
     <Card
       style={styles.card}
       mode="outlined"
-      onLongPress={() =>
-        console.log("Card item-" + itemObject.id + " long-pressed")
-      }
+      onLongPress={() => {
+        deleteItem();
+      }}
     >
       <Card.Content>
         <Title>{itemObject.title.toUpperCase()}</Title>

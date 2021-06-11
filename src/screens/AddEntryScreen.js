@@ -58,10 +58,6 @@ const AddEntryScreen = ({ navigation }) => {
 
   const saveData = () => {
     if (title.length > 0) {
-      Alert.alert(
-        "Success",
-        "" + title + " target is " + target + " per " + unit
-      );
       addNewItemsDb();
       navigation.navigate("Home", { updateFlag: true });
     } else {
