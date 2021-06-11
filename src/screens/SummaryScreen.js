@@ -77,10 +77,26 @@ const SummaryScreen = ({ navigation, route }) => {
 
     db.transaction((tx) => {
       tx.executeSql(
-        "select * from metrics where item_id=?",
+        "select * from metrics where timestamp>date('now', '-7 day') and item_id=?",
         [item_id],
         (_, { rows }) => {
-          setMetricsCount(rows.length);
+          var tempList = [];
+          var thisDateSum = 0;
+          var tempDate = rows.item(0).timestamp;
+
+          for (let i = 0; i < rows.length; i++) {
+            if (rows.item(i).timestamp == tempDate) {
+              thisDateSum += rows.item(i).value;
+            } else {
+              tempList.push(thisDateSum);
+              thisDateSum = rows.item(i).value;
+              tempDate = rows.item(i).timestamp;
+            }
+          }
+          
+          tempList.push(thisDateSum);
+          setDailyStats(tempList);
+          console.log("DailyStats: " + dailyStats);
         }
       );
     });
@@ -91,14 +107,15 @@ const SummaryScreen = ({ navigation, route }) => {
       <Text style={styles.title}>{itemObject.title.toUpperCase()}</Text>
       <BarChart
         style={{ height: "50%" }}
-        data={data}
+        data={dailyStats}
         svg={{ fill }}
-        contentInset={{ top: 16, bottom: 16 }}
+        contentInset={{ top: 32, bottom: 32, left: 16, right: 16 }}
       >
         <Grid />
       </BarChart>
       <Text style={styles.stats}>{metricsCount}</Text>
       <Button onPress={goToHome} title="Home" />
+      <Button onPress={getDailyArray} title="SQL" />
 
     </View>
   );

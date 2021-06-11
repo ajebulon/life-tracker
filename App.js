@@ -36,7 +36,7 @@ const App = () => {
         <Stack.Screen 
           name="Summary" 
           component={SummaryScreen} 
-          options={({ route }) => ({ title: "Summary for " + route.params.itemObject.title.toUpperCase() })}
+          options={{title: "Summary"}}
           />
         <Stack.Screen 
           name="Counter" 
