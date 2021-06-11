@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import {
   Button,
   Card,
@@ -44,6 +44,26 @@ const CardItem = ({ itemObject, navigation, route }) => {
   useEffect(() => {
     getDailyCount();
   }, [route.params]);
+
+  const addOneNewMetrics = () => {
+    const alertMsg = "Add single entry to " + itemObject.title.toUpperCase() + "?\n\n\n\nHint: You can add multiple entries by clicking on the CLOCK (rightmost) icon";
+    Alert.alert(
+      "",
+      alertMsg,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            addOneNewMetricsDb();
+          },
+        }
+      ]
+    );
+  };
 
   const addOneNewMetricsDb = () => {
     const value = 1;
@@ -129,7 +149,7 @@ const CardItem = ({ itemObject, navigation, route }) => {
         <Button
           mode="contained"
           style={styles.itemButton}
-          onPress={addOneNewMetricsDb}
+          onPress={addOneNewMetrics}
           icon="plus"
         >
           {/* Plus */}
