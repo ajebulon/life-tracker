@@ -50,6 +50,7 @@ const db = SQLite.openDatabase("lifetracker.db");
 const HomeScreen = ({ navigation, route }) => {
   const [items, setItems] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [renderFlag, setRenderFlag] = useState(false);
 
   useEffect(() => {
     createDbTable();
@@ -58,7 +59,13 @@ const HomeScreen = ({ navigation, route }) => {
   useEffect(() => {
     getAllItemsDb();
   }
-  // , [route.params]
+  , [route.params]);
+
+  useEffect(() => {
+    getAllItemsDb();
+    setRenderFlag(false);
+  }
+  , [renderFlag]
   );
 
   const onRefresh = () => {
@@ -132,7 +139,7 @@ const HomeScreen = ({ navigation, route }) => {
         >
           {items.map((item) => {
             return (
-              <CardItem key={item.item_id} itemObject={item} navigation={navigation} route={route} />
+              <CardItem key={item.item_id} itemObject={item} navigation={navigation} route={route} setRenderFlag={setRenderFlag}/>
             );
           })}
         <View styles={{height: 64}}><Text style={{fontSize: 80}}></Text></View>

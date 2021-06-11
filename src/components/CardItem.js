@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 
 const db = SQLite.openDatabase("lifetracker.db");
 
-const CardItem = ({ itemObject, navigation, route }) => {
+const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
   const [dailyCount, setDailyCount] = useState(0);
 
   useEffect(() => {
@@ -157,6 +157,7 @@ const CardItem = ({ itemObject, navigation, route }) => {
         onPress: () => {
           deleteItemFromMetricsDb();
           deleteItemFromItemsDb();
+          setRenderFlag(true);
         },
       },
     ]);
