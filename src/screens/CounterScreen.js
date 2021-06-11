@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     margin: "2%",
-    backgroundColor: "#ffffff00",
+    backgroundColor: "#FFFFFF",
   },
 
   fabRight: {
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "flex-end",
-    backgroundColor: "#FFFFFF",
   },
 
   deltaTitle: {
@@ -48,7 +47,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "flex-start",
-    backgroundColor: "#FFFFFF",
   },
 
   delta: {
