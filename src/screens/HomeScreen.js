@@ -57,7 +57,9 @@ const HomeScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     getAllItemsDb();
-  });
+  }
+  // , [route.params]
+  );
 
   const onRefresh = () => {
     setRefresh(true);
