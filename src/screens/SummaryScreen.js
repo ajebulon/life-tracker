@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Text as TextRN } from "react-native";
+import { FAB } from "react-native-paper";
 import * as SQLite from "expo-sqlite";
 
-import { BarChart, Grid, XAxis, YAxis } from "react-native-svg-charts";
+import { BarChart, Grid } from "react-native-svg-charts";
+import { Text, LinearGradient, Stop, Defs } from "react-native-svg";
 
 const styles = StyleSheet.create({
   container: {
@@ -22,6 +25,13 @@ const styles = StyleSheet.create({
     marginBottom: 64,
     alignSelf: "center",
   },
+
+  fabLeft: {
+    position: "absolute",
+    margin: 32,
+    left: 0,
+    bottom: 0,
+  },
 });
 
 const db = SQLite.openDatabase("lifetracker.db");
@@ -30,28 +40,9 @@ const SummaryScreen = ({ navigation, route }) => {
   const [metricsCount, setMetricsCount] = useState(0);
   const [dailyStats, setDailyStats] = useState([]);
   const [dateStats, setDateStats] = useState([]);
+  const [graphCutoff, setGraphCutoff] = useState(0);
 
   const itemObject = route.params.itemObject;
-  const fill = "#8153F2";
-  const data = [
-    50,
-    10,
-    40,
-    95,
-    -4,
-    -24,
-    null,
-    85,
-    undefined,
-    0,
-    35,
-    53,
-    -53,
-    24,
-    50,
-    -20,
-    -80,
-  ];
 
   useEffect(() => {
     getMetricsCount();
@@ -74,6 +65,10 @@ const SummaryScreen = ({ navigation, route }) => {
 
   const goToHome = () => {
     navigation.navigate("Home");
+  };
+
+  const goToGraph = () => {
+    navigation.navigate("Graph");
   };
 
   const getLastWeekDates = () => {
@@ -111,55 +106,75 @@ const SummaryScreen = ({ navigation, route }) => {
             }
           }
 
-          /* Remove first zero values (non-existing data) */
-          var cleanDailyStats = [];
-          var cleanFlag = false;
-          var cleanDates = [];
+          // /* Remove first zero values (non-existing data) */
+          // var cleanDailyStats = [];
+          // var cleanFlag = false;
+          // var cleanDates = [];
 
-          for (let i = 0; i < lastWeekDailyStats.length; i++) {
-            if (lastWeekDailyStats[i] > 0 || cleanFlag) {
-              cleanFlag = true;
-              cleanDailyStats.push(lastWeekDailyStats[i]);
-              cleanDates.push(lastWeekDates[i]);
-            }
-          }
-          setDailyStats(cleanDailyStats);
-          setDateStats(cleanDates);
+          // for (let i = 0; i < lastWeekDailyStats.length; i++) {
+          //   if (lastWeekDailyStats[i] > 0 || cleanFlag) {
+          //     cleanFlag = true;
+          //     cleanDailyStats.push(lastWeekDailyStats[i]);
+          //     cleanDates.push(lastWeekDates[i]);
+          //   }
+          // }
+
+          setDailyStats(lastWeekDailyStats);
+          setDateStats(lastWeekDates);
+          setGraphCutoff(Math.max(...lastWeekDailyStats) * 0.8);
         }
       );
     });
   };
 
+  const CUT_OFF = graphCutoff;
+  const Labels = ({ x, y, bandwidth, data }) =>
+    data.map((value, index) => (
+      <Text
+        key={index}
+        x={x(index) + bandwidth / 2}
+        y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
+        fontSize={16}
+        fill={value >= CUT_OFF ? "white" : "black"}
+        alignmentBaseline={"middle"}
+        textAnchor={"middle"}
+      >
+        {value}
+      </Text>
+    ));
+
+  const Gradient = () => (
+    <Defs key={"gradient"}>
+      <LinearGradient id={"gradient"} x1={"0%"} y1={"0%"} x2={"0%"} y2={"100%"}>
+        <Stop offset={"0%"} stopColor={"#6200EE"} />
+        <Stop offset={"100%"} stopColor={"#00DAC4"} />
+      </LinearGradient>
+    </Defs>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{itemObject.title.toUpperCase()}</Text>
-      <YAxis 
-        data={dailyStats}
-        formatLabel={(value) => value}
-        contentInset={{ top: 20, bottom: 20 }}
-        svg={{ fontSize: 16, fill: "black" }}
-
+      <TextRN style={styles.title}>{itemObject.title.charAt(0).toUpperCase() + itemObject.title.slice(1)}</TextRN>
+      <View
+        style={{ flexDirection: "row", height: "50%", paddingVertical: 16 }}
       >
-      </YAxis>
-      <BarChart
-        style={{ height: "50%" }}
-        data={dailyStats}
-        svg={{ fill }}
-        contentInset={{ top: 32, bottom: 32, left: 16, right: 16 }}
-        yMin={0}
-      >
-        <Grid />
-      </BarChart>
-      <XAxis 
-        data={dailyStats}
-        formatLabel={(value, index) => value}
-        contentInset={{ left: 72, right: 72 }}
-        svg={{ fontSize: 16, fill: "black" }}
-
-      >
-      </XAxis>
-      <Text style={styles.stats}>{metricsCount}</Text>
-      <Button onPress={goToHome} title="Home" />
+        <BarChart
+          style={{ flex: 1 }}
+          data={dailyStats}
+          svg={{ fill: "url(#gradient)" }}
+          contentInset={{ top: 10, bottom: 10 }}
+          spacingOuter={0.2}
+          spacingInner={0.2}
+          gridMin={0}
+          numberOfTicks={5}
+        >
+          <Grid direction={Grid.Direction.HORIZONTAL} />
+          <Gradient />
+          <Labels />
+        </BarChart>
+      </View>
+      {/* <Button onPress={goToHome} title="Home" /> */}
+      <FAB style={styles.fabLeft} icon="home" onPress={goToHome} />
     </View>
   );
 };
