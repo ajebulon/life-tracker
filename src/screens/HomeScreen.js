@@ -145,7 +145,7 @@ const HomeScreen = ({ navigation, route }) => {
         <View styles={{height: 64}}><Text style={{fontSize: 80}}></Text></View>
         </ScrollView>
       </View>
-      <FAB style={styles.fabClean} icon="trash-can-outline" onPress={deleteDb} />
+      {/* <FAB style={styles.fabClean} icon="trash-can-outline" onPress={deleteDb} /> */}
       <FAB style={styles.fab} icon="plus" onPress={goToAddEntry} />
     </View>
   );

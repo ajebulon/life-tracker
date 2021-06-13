@@ -16,7 +16,9 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 32,
+    marginTop: "10%",
+    marginBottom: "10%",
+    fontSize: 24,
     alignSelf: "center",
   },
 
@@ -166,7 +168,7 @@ const SummaryScreen = ({ navigation, route }) => {
           spacingOuter={0.2}
           spacingInner={0.2}
           gridMin={0}
-          numberOfTicks={5}
+          numberOfTicks={10}
         >
           <Grid direction={Grid.Direction.HORIZONTAL} />
           <Gradient />
