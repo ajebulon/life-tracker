@@ -41,7 +41,7 @@ const App = () => {
         <Stack.Screen 
           name="Counter" 
           component={CounterScreen} 
-          options={({ route }) => ({ title: "Counter for " + route.params.itemObject.title.toUpperCase() })}
+          options={({ route }) => ({ title: "Counter for " + route.params.itemObject.title.charAt(0).toUpperCase() + route.params.itemObject.title.slice(1)})}
           />
           
       </Stack.Navigator>

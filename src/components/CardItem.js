@@ -47,7 +47,7 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
 
   const addOneNewMetrics = () => {
     const alertMsg =
-      "Add single entry to " + itemObject.title.toUpperCase() + "?";
+      "Add single record to " + itemObject.title.toUpperCase() + "?";
     Alert.alert("", alertMsg, [
       {
         text: "Cancel",

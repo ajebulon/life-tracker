@@ -4,8 +4,9 @@ import { Text as TextRN } from "react-native";
 import { FAB } from "react-native-paper";
 import * as SQLite from "expo-sqlite";
 
-import { BarChart, Grid } from "react-native-svg-charts";
-import { Text, LinearGradient, Stop, Defs } from "react-native-svg";
+import { BarChart, Grid, XAxis } from "react-native-svg-charts";
+import { Text, LinearGradient, Line, Stop, Defs } from "react-native-svg";
+import { scaleBand } from "d3-scale";
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +43,10 @@ const SummaryScreen = ({ navigation, route }) => {
   const [metricsCount, setMetricsCount] = useState(0);
   const [dailyStats, setDailyStats] = useState([]);
   const [dateStats, setDateStats] = useState([]);
+  const [weeklyStats, setWeeklyStats] = useState([]);
   const [graphCutoff, setGraphCutoff] = useState(0);
+  const [graphMaxElem, setGraphMaxElem] = useState(0);
+
 
   const itemObject = route.params.itemObject;
 
@@ -85,6 +89,12 @@ const SummaryScreen = ({ navigation, route }) => {
     return lastWeekDates;
   };
 
+  const getCleanDate = (dateString) => {
+    const day = parseInt(dateString.slice(8,10));
+    const mon = parseInt(dateString.slice(5,7));
+    return mon.toString() + "/" + day.toString();
+  }
+
   const getDailyArray = () => {
     const item_id = itemObject.item_id;
 
@@ -108,22 +118,27 @@ const SummaryScreen = ({ navigation, route }) => {
             }
           }
 
-          // /* Remove first zero values (non-existing data) */
-          // var cleanDailyStats = [];
-          // var cleanFlag = false;
-          // var cleanDates = [];
-
-          // for (let i = 0; i < lastWeekDailyStats.length; i++) {
-          //   if (lastWeekDailyStats[i] > 0 || cleanFlag) {
-          //     cleanFlag = true;
-          //     cleanDailyStats.push(lastWeekDailyStats[i]);
-          //     cleanDates.push(lastWeekDates[i]);
-          //   }
-          // }
-
           setDailyStats(lastWeekDailyStats);
           setDateStats(lastWeekDates);
+
+          var tempElem;
+          var tempList = [];
+          for (let i = 0; i < lastWeekDailyStats.length; i++) {
+            tempElem = {};
+            tempElem['date'] = getCleanDate(lastWeekDates[i]);
+            tempElem['stats'] = lastWeekDailyStats[i];
+            tempList.push(tempElem);
+          }
+          setWeeklyStats(tempList);
+
           setGraphCutoff(Math.max(...lastWeekDailyStats) * 0.8);
+          setGraphMaxElem(() => {
+            if (Math.max(...lastWeekDailyStats) < itemObject.target) {
+              return itemObject.target;
+            } else {
+              return (Math.max(...lastWeekDailyStats));
+            }
+          });
         }
       );
     });
@@ -135,13 +150,13 @@ const SummaryScreen = ({ navigation, route }) => {
       <Text
         key={index}
         x={x(index) + bandwidth / 2}
-        y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
+        y={value.stats < CUT_OFF ? y(value.stats) - 10 : y(value.stats) + 15}
         fontSize={16}
-        fill={value >= CUT_OFF ? "white" : "black"}
+        fill={value.stats >= CUT_OFF ? "white" : "black"}
         alignmentBaseline={"middle"}
         textAnchor={"middle"}
       >
-        {value}
+        {value.stats}
       </Text>
     ));
 
@@ -154,26 +169,58 @@ const SummaryScreen = ({ navigation, route }) => {
     </Defs>
   );
 
+  const HorizontalLine = (({ y }) => (
+      <Line
+          key={ 'zero-axis' }
+          x1={ '0%' }
+          x2={ '100%' }
+          y1={ y(itemObject.target) }
+          y2={ y(itemObject.target) }
+          stroke={ 'grey' }
+          strokeDasharray={ [ 4, 8 ] }
+          strokeWidth={ 2 }
+      />
+  ))
+
   return (
     <View style={styles.container}>
-      <TextRN style={styles.title}>{itemObject.title.charAt(0).toUpperCase() + itemObject.title.slice(1)}</TextRN>
+      <TextRN style={styles.title}>
+        {itemObject.title.charAt(0).toUpperCase() + itemObject.title.slice(1)}
+      </TextRN>
       <View
-        style={{ flexDirection: "row", height: "50%", paddingVertical: 16 }}
+        style={{ 
+          height: "50%", 
+          paddingVertical: 16 
+        }}
       >
         <BarChart
           style={{ flex: 1 }}
-          data={dailyStats}
+          data={weeklyStats}
+          yAccessor={({ item }) => item.stats}
+          xAccessor={({ item }) => item.date}
           svg={{ fill: "url(#gradient)" }}
           contentInset={{ top: 10, bottom: 10 }}
           spacingOuter={0.2}
           spacingInner={0.2}
           gridMin={0}
+          gridMax={graphMaxElem}
           numberOfTicks={10}
         >
           <Grid direction={Grid.Direction.HORIZONTAL} />
           <Gradient />
           <Labels />
+          <HorizontalLine />
         </BarChart>
+        <XAxis
+          style={{ marginTop: 10 }}
+          data={weeklyStats}
+          scale={scaleBand}
+          xAccessor={({ item }) => item.date}
+          formatLabel={(value, index) => {
+            return index < 6 ? value : "Today";
+          }}
+          svg={{ fontSize: 14, fill: "black" }}
+        />
       </View>
       {/* <Button onPress={goToHome} title="Home" /> */}
       <FAB style={styles.fabLeft} icon="home" onPress={goToHome} />
