@@ -78,7 +78,7 @@ const CounterScreen = ({ navigation, route }) => {
     if (count > 0) {
       db.transaction((tx) => {
         tx.executeSql(
-          "insert into metrics (timestamp, value, item_id) values (date('now'), ?, ?)",
+          "insert into metrics (timestamp, value, item_id) values (datetime('now'), ?, ?)",
           [count, item_id],
           [],
           (_, error) => {

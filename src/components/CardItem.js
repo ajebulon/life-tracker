@@ -68,7 +68,7 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
 
     db.transaction((tx) => {
       tx.executeSql(
-        "insert into metrics (timestamp, value, item_id) values (date('now'), ?, ?)",
+        "insert into metrics (timestamp, value, item_id) values (datetime('now'), ?, ?)",
         [value, item_id],
         [],
         (_, error) => {
@@ -77,9 +77,9 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
       );
 
       tx.executeSql(
-        "select * from metrics where timestamp=date('now') and item_id=?",
+        "select * from metrics where timestamp < date('now','localtime') and timestamp > date('now','localtime','-1 day') and item_id=?",
         [item_id],
-        (_, { rows }) => {
+        (_, { rows }) => {        
           var totalEntries = 0;
           for (let i = 0; i < rows.length; i++) {
             totalEntries += rows.item(i).value;
@@ -98,7 +98,7 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
 
     db.transaction((tx) => {
       tx.executeSql(
-        "select * from metrics where timestamp=date('now') and item_id=?",
+        "select * from metrics where timestamp < date('now','localtime') and timestamp > date('now','localtime','-1 day') and item_id=?",
         [item_id],
         (_, { rows }) => {
           var totalEntries = 0;

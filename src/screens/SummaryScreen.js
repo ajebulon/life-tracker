@@ -47,7 +47,6 @@ const SummaryScreen = ({ navigation, route }) => {
   const [graphCutoff, setGraphCutoff] = useState(0);
   const [graphMaxElem, setGraphMaxElem] = useState(0);
 
-
   const itemObject = route.params.itemObject;
 
   useEffect(() => {
@@ -81,26 +80,29 @@ const SummaryScreen = ({ navigation, route }) => {
     const refDate = new Date();
     var lastWeekDates = [];
 
-    var lastWeekDate = new Date();
+    var lastWeekDate;
+    const tzoneOffset = refDate.getTimezoneOffset() / 60;
     for (let i = -6; i <= 0; i++) {
+      lastWeekDate = new Date();
       lastWeekDate.setDate(refDate.getDate() + i);
+      lastWeekDate.setUTCHours(lastWeekDate.getUTCHours() - tzoneOffset);
       lastWeekDates.push(lastWeekDate.toISOString());
     }
     return lastWeekDates;
   };
 
   const getCleanDate = (dateString) => {
-    const day = parseInt(dateString.slice(8,10));
-    const mon = parseInt(dateString.slice(5,7));
+    const day = parseInt(dateString.slice(8, 10));
+    const mon = parseInt(dateString.slice(5, 7));
     return mon.toString() + "/" + day.toString();
-  }
+  };
 
   const getDailyArray = () => {
     const item_id = itemObject.item_id;
 
     db.transaction((tx) => {
       tx.executeSql(
-        "select * from metrics where timestamp>date('now','-7 day') and item_id=?",
+        "select *, datetime(timestamp,'localtime') as timestamp from metrics where timestamp > date('now','-7 days') and item_id=?",
         [item_id],
         (_, { rows }) => {
           const lastWeekDates = getLastWeekDates();
@@ -110,7 +112,11 @@ const SummaryScreen = ({ navigation, route }) => {
           for (let i = 0; i < rows.length; i++) {
             for (let dateIdx = 0; dateIdx < lastWeekDates.length; dateIdx++) {
               /* Find corresponding date */
-              if (lastWeekDates[dateIdx].includes(rows.item(i).timestamp) > 0) {
+              if (
+                lastWeekDates[dateIdx].includes(
+                  rows.item(i).timestamp.slice(0, 10)
+                ) > 0
+              ) {
                 /* Update the value */
                 lastWeekDailyStats[dateIdx] += rows.item(i).value;
                 break;
@@ -125,8 +131,8 @@ const SummaryScreen = ({ navigation, route }) => {
           var tempList = [];
           for (let i = 0; i < lastWeekDailyStats.length; i++) {
             tempElem = {};
-            tempElem['date'] = getCleanDate(lastWeekDates[i]);
-            tempElem['stats'] = lastWeekDailyStats[i];
+            tempElem["date"] = getCleanDate(lastWeekDates[i]);
+            tempElem["stats"] = lastWeekDailyStats[i];
             tempList.push(tempElem);
           }
           setWeeklyStats(tempList);
@@ -136,7 +142,7 @@ const SummaryScreen = ({ navigation, route }) => {
             if (Math.max(...lastWeekDailyStats) < itemObject.target) {
               return itemObject.target;
             } else {
-              return (Math.max(...lastWeekDailyStats));
+              return Math.max(...lastWeekDailyStats);
             }
           });
         }
@@ -169,18 +175,18 @@ const SummaryScreen = ({ navigation, route }) => {
     </Defs>
   );
 
-  const HorizontalLine = (({ y }) => (
-      <Line
-          key={ 'zero-axis' }
-          x1={ '0%' }
-          x2={ '100%' }
-          y1={ y(itemObject.target) }
-          y2={ y(itemObject.target) }
-          stroke={ 'grey' }
-          strokeDasharray={ [ 4, 8 ] }
-          strokeWidth={ 2 }
-      />
-  ))
+  const HorizontalLine = ({ y }) => (
+    <Line
+      key={"zero-axis"}
+      x1={"0%"}
+      x2={"100%"}
+      y1={y(itemObject.target)}
+      y2={y(itemObject.target)}
+      stroke={"grey"}
+      strokeDasharray={[4, 8]}
+      strokeWidth={2}
+    />
+  );
 
   return (
     <View style={styles.container}>
@@ -188,9 +194,9 @@ const SummaryScreen = ({ navigation, route }) => {
         {itemObject.title.charAt(0).toUpperCase() + itemObject.title.slice(1)}
       </TextRN>
       <View
-        style={{ 
-          height: "50%", 
-          paddingVertical: 16 
+        style={{
+          height: "50%",
+          paddingVertical: 16,
         }}
       >
         <BarChart

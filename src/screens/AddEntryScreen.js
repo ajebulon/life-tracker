@@ -50,9 +50,9 @@ const AddEntryScreen = ({ navigation }) => {
         "insert into items (title, target, unit) values (?, ?, ?)",
         [title, target, unit]
       );
-      tx.executeSql("select * from items", [], (_, { rows }) => {
-        // console.log(JSON.stringify(rows));
-      });
+      // tx.executeSql("select * from items", [], (_, { rows }) => {
+      //   console.log(JSON.stringify(rows));
+      // });
     });
   };
 
