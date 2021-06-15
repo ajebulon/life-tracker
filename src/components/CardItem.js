@@ -75,35 +75,30 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
           console.log(error);
         }
       );
-
-      tx.executeSql(
-        "select * from metrics where timestamp < date('now','localtime') and timestamp > date('now','localtime','-1 day') and item_id=?",
-        [item_id],
-        (_, { rows }) => {        
-          var totalEntries = 0;
-          for (let i = 0; i < rows.length; i++) {
-            totalEntries += rows.item(i).value;
-          }
-          setDailyCount(totalEntries);
-        },
-        (_, error) => {
-          console.log(error);
-        }
-      );
     });
+
+    getDailyCount();
+
   };
 
   const getDailyCount = () => {
     const item_id = itemObject.item_id;
 
+    var todayDate = new Date();
+    const tzoneOffset = todayDate.getTimezoneOffset() / 60;
+    todayDate.setUTCHours(todayDate.getUTCHours() - tzoneOffset);
+    todayDate = todayDate.toISOString();
+
     db.transaction((tx) => {
       tx.executeSql(
-        "select * from metrics where timestamp < date('now','localtime') and timestamp > date('now','localtime','-1 day') and item_id=?",
+        "select *, datetime(timestamp,'localtime') as timestamp from metrics where timestamp >= date('now','-1 days') and item_id=?",
         [item_id],
         (_, { rows }) => {
           var totalEntries = 0;
           for (let i = 0; i < rows.length; i++) {
-            totalEntries += rows.item(i).value;
+            if (todayDate.includes(rows.item(i).timestamp.slice(0, 10))) {
+              totalEntries += rows.item(i).value;
+            }
           }
           setDailyCount(totalEntries);
         },

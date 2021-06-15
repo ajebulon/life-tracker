@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "life-tracker",
+    "name": "Life Tracker",
     "slug": "life-tracker",
-    "version": "1.0.1",
+    "version": "0.2",
     "orientation": "portrait",
-    "icon": "./assets/playstore.png",
+    "icon": "./assets/life-tracker-icon.png",
     "splash": {
       "image": "./assets/life-tracker-splash.png",
       "resizeMode": "cover",
@@ -21,7 +21,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/playstore.png",
+        "foregroundImage": "./assets/life-tracker-icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.ajebulon.lifetracker"
