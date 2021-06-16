@@ -40,40 +40,19 @@ const styles = StyleSheet.create({
 const db = SQLite.openDatabase("lifetracker.db");
 
 const SummaryScreen = ({ navigation, route }) => {
-  const [metricsCount, setMetricsCount] = useState(0);
-  const [dailyStats, setDailyStats] = useState([]);
-  const [dateStats, setDateStats] = useState([]);
   const [weeklyStats, setWeeklyStats] = useState([]);
   const [graphCutoff, setGraphCutoff] = useState(0);
   const [graphMaxElem, setGraphMaxElem] = useState(0);
 
   const itemObject = route.params.itemObject;
+  const dailyTarget = (itemObject.unit === "day") ? itemObject.target : Math.ceil(itemObject.target / 7);
 
   useEffect(() => {
-    getMetricsCount();
     getDailyArray();
   }, []);
 
-  const getMetricsCount = () => {
-    const item_id = itemObject.item_id;
-
-    db.transaction((tx) => {
-      tx.executeSql(
-        "select * from metrics where item_id=?",
-        [item_id],
-        (_, { rows }) => {
-          setMetricsCount(rows.length);
-        }
-      );
-    });
-  };
-
   const goToHome = () => {
     navigation.navigate("Home");
-  };
-
-  const goToGraph = () => {
-    navigation.navigate("Graph");
   };
 
   const getLastWeekDates = () => {
@@ -124,9 +103,6 @@ const SummaryScreen = ({ navigation, route }) => {
             }
           }
 
-          setDailyStats(lastWeekDailyStats);
-          setDateStats(lastWeekDates);
-
           var tempElem;
           var tempList = [];
           for (let i = 0; i < lastWeekDailyStats.length; i++) {
@@ -139,8 +115,8 @@ const SummaryScreen = ({ navigation, route }) => {
 
           setGraphCutoff(Math.max(...lastWeekDailyStats) * 0.8);
           setGraphMaxElem(() => {
-            if (Math.max(...lastWeekDailyStats) < itemObject.target) {
-              return itemObject.target;
+            if (Math.max(...lastWeekDailyStats) < dailyTarget) {
+              return dailyTarget;
             } else {
               return Math.max(...lastWeekDailyStats);
             }
@@ -180,8 +156,8 @@ const SummaryScreen = ({ navigation, route }) => {
       key={"zero-axis"}
       x1={"0%"}
       x2={"100%"}
-      y1={y(itemObject.target)}
-      y2={y(itemObject.target)}
+      y1={y(dailyTarget)}
+      y2={y(dailyTarget)}
       stroke={"grey"}
       strokeDasharray={[4, 8]}
       strokeWidth={2}
