@@ -46,7 +46,7 @@ const App = () => {
         <Stack.Screen 
           name="AddEntry" 
           component={AddEntryScreen} 
-          options={{headerTitle: "New Entry"}}
+          options={{headerTitle: "New Item"}}
           />
         <Stack.Screen 
           name="Summary" 

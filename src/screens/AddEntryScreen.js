@@ -70,7 +70,7 @@ const AddEntryScreen = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.containerCard}>
           <TextInput
-            label="Title"
+            label="Item Name"
             value={title}
             onChangeText={(title) => setTitle(title)}
             style={styles.cardElem}

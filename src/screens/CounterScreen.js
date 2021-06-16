@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
 
   deltaTitle: {
-    fontSize: 32,
+    fontSize: 20,
   },
 
   deltaContainer: {
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
 
   delta: {
-    fontSize: 32,
+    fontSize: 20,
     justifyContent: "center",
     alignItems: "center",
   },
