@@ -6,12 +6,26 @@ import {
   createStackNavigator,
 } from "@react-navigation/stack";
 
+import { Appbar } from "react-native-paper";
+
 import HomeScreen from "./src/screens/HomeScreen";
 import AddEntryScreen from "./src/screens/AddEntryScreen";
 import SummaryScreen from "./src/screens/SummaryScreen";
 import CounterScreen from "./src/screens/CounterScreen";
 
 const Stack = createStackNavigator();
+
+const CustomNavigationBar = ({ scene, previous, navigation }) => {
+  const { options } = scene.descriptor;
+  const title = options.headerTitle !== undefined ? options.headerTitle : options.title !== undefined ? options.title : scene.route.name;
+
+  return (
+    <Appbar.Header>
+      {previous ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
+      <Appbar.Content title={title}/>
+    </Appbar.Header>
+  )
+}
 
 const App = () => {
   return (
@@ -21,27 +35,28 @@ const App = () => {
         initialRouteName="Home"
         screenOptions={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          header: (props) => <CustomNavigationBar {...props} />
         }}
       >
         <Stack.Screen 
           name="Home" 
           component={HomeScreen} 
-          options={{title: "Life Tracker"}}
+          options={{headerTitle: "Life Tracker"}}
           />
         <Stack.Screen 
           name="AddEntry" 
           component={AddEntryScreen} 
-          options={{title: "New Entry"}}
+          options={{headerTitle: "New Entry"}}
           />
         <Stack.Screen 
           name="Summary" 
           component={SummaryScreen} 
-          options={{title: "Summary"}}
+          options={{headerTitle: "Summary"}}
           />
         <Stack.Screen 
           name="Counter" 
           component={CounterScreen} 
-          options={({ route }) => ({ title: "Counter for " + route.params.itemObject.title.charAt(0).toUpperCase() + route.params.itemObject.title.slice(1)})}
+          options={({ route }) => ({ headerTitle: "Counter for " + route.params.itemObject.title.charAt(0).toUpperCase() + route.params.itemObject.title.slice(1)})}
           />
           
       </Stack.Navigator>
