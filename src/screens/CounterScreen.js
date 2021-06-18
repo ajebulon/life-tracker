@@ -181,7 +181,7 @@ const CounterScreen = ({ navigation, route }) => {
           icon="content-save"
           onPress={addNewMetricsDb}
         />
-        <FAB style={styles.fabLeft} icon="home" onPress={goToHome} />
+        {/* <FAB style={styles.fabLeft} icon="home" onPress={goToHome} /> */}
       </View>
     </TouchableWithoutFeedback>
   );

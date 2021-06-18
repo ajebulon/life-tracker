@@ -204,8 +204,7 @@ const SummaryScreen = ({ navigation, route }) => {
           svg={{ fontSize: 14, fill: "black" }}
         />
       </View>
-      {/* <Button onPress={goToHome} title="Home" /> */}
-      <FAB style={styles.fabLeft} icon="home" onPress={goToHome} />
+      {/* <FAB style={styles.fabLeft} icon="home" onPress={goToHome} /> */}
     </View>
   );
 };
