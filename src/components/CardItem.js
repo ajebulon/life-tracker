@@ -34,12 +34,17 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: "2%",
   },
+
+  cardSuccess: {
+    backgroundColor: "#f0fff0",
+  }
 });
 
 const db = SQLite.openDatabase("lifetracker.db");
 
 const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
   const [dailyCount, setDailyCount] = useState(0);
+  const dailyTarget = (itemObject.unit === "day") ? itemObject.target : Math.ceil(itemObject.target / 7);
 
   useEffect(() => {
     getDailyCount();
@@ -168,7 +173,8 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
 
   return (
     <Card
-      style={styles.card}
+      style={[styles.card, dailyCount < dailyTarget ? "" : styles.cardSuccess]}
+      
       mode="outlined"
       onLongPress={() => {
         deleteItem();
@@ -178,8 +184,8 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
         <Title>{itemObject.title.toUpperCase()}</Title>
         <Divider />
         <Paragraph>
-          Your target is {itemObject.target} per {itemObject.unit}.{" "}
-          {dailyCount < itemObject.target
+          Your target is {dailyTarget} per {itemObject.unit}.{" "}
+          {dailyCount < dailyTarget
             ? "Keep working on it!"
             : "You've done great job!"}
         </Paragraph>
