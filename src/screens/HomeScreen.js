@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, ScrollView, RefreshControl, Alert } from "react-native";
+import { StyleSheet, View, Text, ScrollView, RefreshControl, Alert, Image } from "react-native";
 import { FAB } from "react-native-paper";
 import * as SQLite from "expo-sqlite";
 
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    flexDirection: "column",
+    // flexDirection: "column",
   },
 
   containerCard: {
@@ -43,6 +43,33 @@ const styles = StyleSheet.create({
     margin: 10,
     fontStyle: "italic",
   },
+
+  bgImageContainer: {
+    flex: 1,
+    marginTop: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  bgImage: {
+    height: 80,
+    width: 80,
+    resizeMode: "contain",
+    opacity: 0.2,
+    marginBottom: 12,
+  },
+
+  bgImageCaption: {
+    fontSize: 16,
+    color: "#969696",
+    marginBottom: 32.,
+  },
+
+  bgImageDesc: {
+    fontSize: 14,
+    color: "#969696",
+  }
+
 });
 
 const db = SQLite.openDatabase("lifetracker.db");
@@ -51,6 +78,7 @@ const HomeScreen = ({ navigation, route }) => {
   const [items, setItems] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [renderFlag, setRenderFlag] = useState(false);
+  const image = require("../../assets/todo-icon.png");
 
   useEffect(() => {
     createDbTable();
@@ -126,8 +154,21 @@ const HomeScreen = ({ navigation, route }) => {
     navigation.navigate("AddEntry");
   };
 
+  const emptyLogo = () => {
+    if (items.length == 0) {
+      return (
+        <View style={styles.bgImageContainer}>
+          <Image source={image} style={styles.bgImage}/>
+          <Text style={styles.bgImageCaption}>No items</Text>
+          <Text style={styles.bgImageDesc}>Items you add will appear here.</Text>
+        </View>
+      );
+    }
+  }
+
   return (
     <View style={styles.container}>
+      {emptyLogo()}
       <View style={styles.containerCard}>
         <ScrollView
           refreshControl={
