@@ -12,6 +12,7 @@ import HomeScreen from "./src/screens/HomeScreen";
 import AddEntryScreen from "./src/screens/AddEntryScreen";
 import SummaryScreen from "./src/screens/SummaryScreen";
 import CounterScreen from "./src/screens/CounterScreen";
+import HelloScreen from "./src/screens/HelloScreen";
 
 const Stack = createStackNavigator();
 
@@ -57,6 +58,11 @@ const App = () => {
           name="Counter" 
           component={CounterScreen} 
           options={({ route }) => ({ headerTitle: "Counter for " + route.params.itemObject.title.charAt(0).toUpperCase() + route.params.itemObject.title.slice(1)})}
+          />
+        <Stack.Screen 
+          name="Hello" 
+          component={HelloScreen} 
+          options={{headerTitle: "Dummy"}}
           />
           
       </Stack.Navigator>

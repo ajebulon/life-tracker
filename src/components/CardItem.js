@@ -20,26 +20,43 @@ const styles = StyleSheet.create({
   },
 
   dailyStatsTitle: {
-    marginTop: 32,
-    fontSize: 20,
+    marginTop: 8,
+    fontSize: 16,
     alignSelf: "center",
   },
 
   dailyStats: {
-    marginBottom: 16,
-    fontSize: 64,
+    marginBottom: 4,
+    fontSize: 40,
     alignSelf: "center",
   },
 
   card: {
     marginBottom: "2%",
   },
+
+  cardSuccess: {
+    backgroundColor: "#f2fde4",
+  },
+
+  cardSuccessBackground: {
+    backgroundColor: "#f2fde4",
+    // backgroundColor: "#ffffff",
+    position: "absolute",
+    resizeMode: "cover",
+    width: 45,
+    height: 45,
+    top: 0,
+    right: 0,
+  }
 });
 
 const db = SQLite.openDatabase("lifetracker.db");
 
 const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
   const [dailyCount, setDailyCount] = useState(0);
+  const dailyTarget = (itemObject.unit === "day") ? itemObject.target : Math.ceil(itemObject.target / 7);
+  const image = require("../../assets/check-mark.png");
 
   useEffect(() => {
     getDailyCount();
@@ -166,9 +183,18 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
     navigation.navigate("Counter", { itemObject: itemObject });
   };
 
+  const renderSuccessIcon = () => {
+    if (dailyCount >= dailyTarget) {
+      return (<Card.Cover source={ image } style={styles.cardSuccessBackground}/>);
+    } else {
+      return null;
+    }
+  }
+
   return (
     <Card
-      style={styles.card}
+      style={[styles.card, dailyCount < dailyTarget ? "" : styles.cardSuccess]}
+      
       mode="outlined"
       onLongPress={() => {
         deleteItem();
@@ -178,13 +204,14 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
         <Title>{itemObject.title.toUpperCase()}</Title>
         <Divider />
         <Paragraph>
-          Your target is {itemObject.target} per {itemObject.unit}.{" "}
-          {dailyCount < itemObject.target
+          Your target is {dailyTarget} per {itemObject.unit}.{" "}
+          {dailyCount < dailyTarget
             ? "Keep working on it!"
             : "You've done great job!"}
         </Paragraph>
         <Text style={styles.dailyStatsTitle}>Daily Stats</Text>
         <Text style={styles.dailyStats}>{dailyCount}</Text>
+        {renderSuccessIcon()}
       </Card.Content>
       <Card.Actions style={{ justifyContent: "space-evenly" }}>
         <Button
