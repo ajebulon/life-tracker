@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, StyleSheet } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import {
   Button,
   Card,
@@ -23,12 +23,27 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 16,
     alignSelf: "center",
+    marginBottom: 8,
   },
 
   dailyStats: {
-    marginBottom: 4,
     fontSize: 40,
+    alignSelf: "flex-end",
+  },
+
+  dailyStatsAloneContainer: {
+    marginBottom: 2, 
     alignSelf: "center",
+  },
+
+  dailyStatsAlone: {
+    fontSize: 40,
+    // marginBottom: 8,
+  },
+
+  lastEntry: {
+    fontSize: 12,
+    alignSelf: "flex-start",
   },
 
   card: {
@@ -55,6 +70,7 @@ const db = SQLite.openDatabase("lifetracker.db");
 
 const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
   const [dailyCount, setDailyCount] = useState(0);
+  const [lastRecord, setLastRecord] = useState(0);
   const dailyTarget =
     itemObject.unit === "day"
       ? itemObject.target
@@ -63,6 +79,7 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
 
   useEffect(() => {
     getDailyCount();
+    getLastRecord();
   }, [route.params]);
 
   const addOneNewMetrics = () => {
@@ -98,6 +115,7 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
     });
 
     getDailyCount();
+    getLastRecord();
   };
 
   const getDailyCount = () => {
@@ -123,6 +141,24 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
         },
         (_, error) => {
           console.log(error);
+        }
+      );
+    });
+  };
+
+  const getLastRecord = () => {
+    const item_id = itemObject.item_id;
+
+    db.transaction((tx) => {
+      tx.executeSql(
+        "select *, MAX(metric_id) from metrics where datetime(timestamp,'localtime') >= date('now') and item_id=?",
+        [item_id],
+        (_, { rows }) => {
+          if (rows.item(0).value !== null) {
+            setLastRecord(rows.item(0).value);
+          } else {
+            setLastRecord(0);
+          }
         }
       );
     });
@@ -177,32 +213,42 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
     ]);
   };
 
-  const deleteLastEntry = () => {
+  const delOneLastMetrics = () => {
+    const alertMsg =
+      "Undo last record from " + itemObject.title.toUpperCase() + "?";
+
+    if (dailyCount == 0) {
+      return;
+    }
+
+    Alert.alert("", alertMsg, [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          delOneLastMetricsDb();
+        },
+      },
+    ]);
+  };
+
+  const delOneLastMetricsDb = () => {
     const item_id = itemObject.item_id;
-    var last_id = undefined;
 
     db.transaction((tx) => {
-
       tx.executeSql(
-        "delete from metrics where metric_id = (select MAX(metric_id) from metrics where item_id=?)",
-        // "select MAX(metric_id), datetime(timestamp,'localtime') as timestamp from metrics where timestamp >= date('now','-1 days') and item_id=?",
-        // "delete from metrics where (select MAX(metric_id), datetime(timestamp,'localtime') as timestamp from metrics where timestamp >= date('now','-1 days') and item_id=?)",
+        "delete from metrics where metric_id = (select MAX(metric_id) from metrics where datetime(timestamp,'localtime') >= date('now') and item_id=?)",
         [item_id],
-        // (_, { rows }) => {
-        //   // console.log(JSON.stringify(rows));
-        //   last_id = rows.metric_id;
-        //   console.log(rows.item(0).metric_id);
-        // }
         () => {
           getDailyCount();
+          getLastRecord();
         }
       );
     });
   };
-
-        // tx.executeSql("select * from metrics", [], (_, { rows }) => {
-        //   console.log(JSON.stringify(rows));
-        // });
 
   const goToSummary = () => {
     navigation.navigate("Summary", { itemObject: itemObject });
@@ -237,7 +283,21 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
             : "You've done great job!"}
         </Paragraph>
         <Text style={styles.dailyStatsTitle}>Daily Stats</Text>
-        <Text style={styles.dailyStats}>{dailyCount}</Text>
+        {lastRecord > 0 ? (
+          <View style={{ flex: 1, flexDirection: "row", marginBottom: 2 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.dailyStats}>{dailyCount}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.lastEntry}>(+{lastRecord})</Text>
+            </View>
+          </View>
+        ) : (
+          <View style={{...styles.dailyStatsAloneContainer, flex: 1, flexDirection: "row"}}>
+            <Text style={styles.dailyStatsAlone}>{dailyCount}</Text>
+          </View>
+        )}
+
         {renderSuccessIcon()}
       </Card.Content>
       <Card.Actions style={{ justifyContent: "space-evenly" }}>
@@ -255,7 +315,7 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
           onPress={goToSummary}
           icon="poll"
         > */}
-          {/* Summary */}
+        {/* Summary */}
         {/* </Button> */}
         <Button
           mode="contained"
@@ -269,7 +329,7 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
           mode="contained"
           style={styles.itemButton}
           icon="undo"
-          onPress={deleteLastEntry}
+          onPress={delOneLastMetrics}
         >
           {/* Counter */}
         </Button>
