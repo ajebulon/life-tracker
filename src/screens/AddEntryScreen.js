@@ -13,15 +13,13 @@ import * as SQLite from "expo-sqlite";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "row",
     backgroundColor: "#ffffff",
-    // justifyContent: "center",
     alignSelf: "center",
   },
 
   containerCard: {
     margin: "5%",
-    backgroundColor: "#ffffff00",
+    backgroundColor: "#ffffff",
   },
 
   cardElem: {
@@ -32,7 +30,7 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     margin: 32,
-    right: 0,
+    right: 8,
     bottom: 0,
   },
 });

@@ -14,16 +14,15 @@ import * as SQLite from "expo-sqlite";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
     margin: "2%",
     backgroundColor: "#FFFFFF",
   },
 
   fabRight: {
     position: "absolute",
-    margin: 32,
+    margin: 24,
     right: 0,
-    bottom: 0,
+    bottom: 2,
   },
 
   fabLeft: {

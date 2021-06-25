@@ -48,14 +48,17 @@ const styles = StyleSheet.create({
     height: 45,
     top: 0,
     right: 0,
-  }
+  },
 });
 
 const db = SQLite.openDatabase("lifetracker.db");
 
 const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
   const [dailyCount, setDailyCount] = useState(0);
-  const dailyTarget = (itemObject.unit === "day") ? itemObject.target : Math.ceil(itemObject.target / 7);
+  const dailyTarget =
+    itemObject.unit === "day"
+      ? itemObject.target
+      : Math.ceil(itemObject.target / 7);
   const image = require("../../assets/check-mark.png");
 
   useEffect(() => {
@@ -95,7 +98,6 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
     });
 
     getDailyCount();
-
   };
 
   const getDailyCount = () => {
@@ -175,6 +177,33 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
     ]);
   };
 
+  const deleteLastEntry = () => {
+    const item_id = itemObject.item_id;
+    var last_id = undefined;
+
+    db.transaction((tx) => {
+
+      tx.executeSql(
+        "delete from metrics where metric_id = (select MAX(metric_id) from metrics where item_id=?)",
+        // "select MAX(metric_id), datetime(timestamp,'localtime') as timestamp from metrics where timestamp >= date('now','-1 days') and item_id=?",
+        // "delete from metrics where (select MAX(metric_id), datetime(timestamp,'localtime') as timestamp from metrics where timestamp >= date('now','-1 days') and item_id=?)",
+        [item_id],
+        // (_, { rows }) => {
+        //   // console.log(JSON.stringify(rows));
+        //   last_id = rows.metric_id;
+        //   console.log(rows.item(0).metric_id);
+        // }
+        () => {
+          getDailyCount();
+        }
+      );
+    });
+  };
+
+        // tx.executeSql("select * from metrics", [], (_, { rows }) => {
+        //   console.log(JSON.stringify(rows));
+        // });
+
   const goToSummary = () => {
     navigation.navigate("Summary", { itemObject: itemObject });
   };
@@ -185,20 +214,18 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
 
   const renderSuccessIcon = () => {
     if (dailyCount >= dailyTarget) {
-      return (<Card.Cover source={ image } style={styles.cardSuccessBackground}/>);
+      return <Card.Cover source={image} style={styles.cardSuccessBackground} />;
     } else {
       return null;
     }
-  }
+  };
 
   return (
     <Card
       style={[styles.card, dailyCount < dailyTarget ? "" : styles.cardSuccess]}
-      
       mode="outlined"
-      onLongPress={() => {
-        deleteItem();
-      }}
+      onLongPress={deleteItem}
+      onPress={goToSummary}
     >
       <Card.Content>
         <Title>{itemObject.title.toUpperCase()}</Title>
@@ -222,19 +249,27 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
         >
           {/* Plus */}
         </Button>
-        <Button
+        {/* <Button
           mode="contained"
           style={styles.itemButton}
           onPress={goToSummary}
           icon="poll"
-        >
+        > */}
           {/* Summary */}
-        </Button>
+        {/* </Button> */}
         <Button
           mode="contained"
           style={styles.itemButton}
           icon="timer"
           onPress={goToCounter}
+        >
+          {/* Counter */}
+        </Button>
+        <Button
+          mode="contained"
+          style={styles.itemButton}
+          icon="undo"
+          onPress={deleteLastEntry}
         >
           {/* Counter */}
         </Button>
