@@ -12,6 +12,7 @@ import HomeScreen from "./src/screens/HomeScreen";
 import AddEntryScreen from "./src/screens/AddEntryScreen";
 import SummaryScreen from "./src/screens/SummaryScreen";
 import CounterScreen from "./src/screens/CounterScreen";
+import AboutScreen from "./src/screens/AboutScreen";
 // import HelloScreen from "./src/screens/HelloScreen";
 
 const Stack = createStackNavigator();
@@ -19,11 +20,14 @@ const Stack = createStackNavigator();
 const CustomNavigationBar = ({ scene, previous, navigation }) => {
   const { options } = scene.descriptor;
   const title = options.headerTitle !== undefined ? options.headerTitle : options.title !== undefined ? options.title : scene.route.name;
+  const _goToAbout = () => navigation.navigate("About");
 
   return (
     <Appbar.Header>
       {previous ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
       <Appbar.Content title={title}/>
+      {previous ? null : <Appbar.Action icon="information-outline" onPress={_goToAbout} />}
+
     </Appbar.Header>
   )
 }
@@ -58,6 +62,11 @@ const App = () => {
           name="Counter" 
           component={CounterScreen} 
           options={({ route }) => ({ headerTitle: "Counter for " + route.params.itemObject.title.charAt(0).toUpperCase() + route.params.itemObject.title.slice(1)})}
+          />
+        <Stack.Screen 
+          name="About" 
+          component={AboutScreen} 
+          options={{headerTitle: "About"}}
           />
         {/* <Stack.Screen 
           name="Hello" 

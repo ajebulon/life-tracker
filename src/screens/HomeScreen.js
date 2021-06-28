@@ -106,13 +106,13 @@ const HomeScreen = ({ navigation, route }) => {
       tx.executeSql(
         "create table if not exists items (item_id integer primary key not null, title text, target int, unit text);",
       [],
-      () => console.log("ItemsDB is created")
+      // () => console.log("ItemsDB is created")
       );
 
       tx.executeSql(
         "create table if not exists metrics (metric_id integer primary key not null, timestamp text, value int, item_id integer not null, foreign key(item_id) references items(item_id));",
       [],
-      () => console.log("MetricsDB is created")
+      // () => console.log("MetricsDB is created")
       );
     });
   };
