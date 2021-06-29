@@ -151,7 +151,7 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
 
     db.transaction((tx) => {
       tx.executeSql(
-        "select *, MAX(metric_id) from metrics where datetime(timestamp,'localtime') >= date('now') and item_id=?",
+        "select *, MAX(metric_id) from metrics where datetime(timestamp,'localtime') >= date('now','localtime') and item_id=?",
         [item_id],
         (_, { rows }) => {
           if (rows.item(0).value !== null) {
@@ -240,7 +240,7 @@ const CardItem = ({ itemObject, navigation, route, setRenderFlag }) => {
 
     db.transaction((tx) => {
       tx.executeSql(
-        "delete from metrics where metric_id = (select MAX(metric_id) from metrics where datetime(timestamp,'localtime') >= date('now') and item_id=?)",
+        "delete from metrics where metric_id = (select MAX(metric_id) from metrics where datetime(timestamp,'localtime') >= date('now','localtime') and item_id=?)",
         [item_id],
         () => {
           getDailyCount();
